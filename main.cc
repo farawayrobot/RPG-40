@@ -201,8 +201,9 @@ int main() {
 			descriptor = Map::NPC;
 			npcNum++;
 // Turn this on to enter NPC loop
-/*			turn_off_ncurses; 
-			//NPC DIALOG LOOP
+			turn_off_ncurses();
+			clear();
+			//NPC DIALOG function
 
 			while (true) {
 				int playerChoice = 0;
@@ -215,14 +216,17 @@ int main() {
 					continue;
 				}
 			}
+			x = old_x;
+			y = old_y;
 //  turn this back on to exit NPC interaction loop
-            turn_on_ncurses();
+//			drawOn(x,y,map,playerHP,playerGP,descriptor)
+			turn_on_ncurses();
             clear();
             map.draw(x, y);
             mvprintw(Map::DISPLAY + 1, 0, "X: %i Y: %i Health: %i Gold: %i\n", x, y, playerHP, playerGP );
             description(descriptor); //function to set tile description
             refresh();
-*/
+
 
 		}
 		
