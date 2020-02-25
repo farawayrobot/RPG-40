@@ -32,6 +32,7 @@ void turn_off_ncurses() {
 	endwin(); // End curses mode
 	system("clear");
 }
+
 //scans tile player is on and displays a description
 void description(char tileDescriptor){
 	if (tileDescriptor == Map::TREASURE){
@@ -47,7 +48,16 @@ void description(char tileDescriptor){
 		mvprintw(Map::DISPLAY +2,0,"Empty land");
 	}
 }
-
+//redraws ncurses map
+void drawOn(int x,int y,Map map,int playerHP,int playerGP,char descriptor){
+	turn_on_ncurses();
+	clear();
+	map.draw(x, y);
+	mvprintw(Map::DISPLAY + 1, 0, "X: %i Y: %i Health: %i Gold %i\n", x, y, playerHP, playerGP);
+	description(descriptor);
+	refresh();
+}
+// booleans for tile scanning
 bool collide(int posX, int posY, Map collision){
 	char tile;
 	tile = collision.getTile(posX,posY);
@@ -99,6 +109,16 @@ bool isNpc(int posX, int posY, Map people){
     }
 }
 
+bool isHero(int posX, int posY, Map hero){
+	char tile;
+	tile =hero.getTile(posX,posY);
+	if (tile == Map::HERO) {
+		return true;
+	} else {
+		return false;
+	}
+}
+// title screen function
 void titleScreen(){
 	while(true){
 		cout << "     Title Screen!\n     Please enter player name\n";
@@ -108,22 +128,43 @@ void titleScreen(){
 	}
 }
 
-// shopkeeper function
+//shopkeeper function
+//Kajiit has wares if you have coin
+//ASCII CAT
+
 
 // Combat function
-
-// dialouge function
+void combat() {
+	while (true) {	
+		int playerChoice = 0;
+		cout << "1) quit 2) FIXME\n";
+		cin >> playerChoice;
+			if (playerChoice == 1) {
+				break;
+			}
+			else {
+				break;
+			//	continue;
+			}
+		}	
+}
 
 // inventory function
+
+
+//dialog function
+//having to do this inside main.cc because of variable scope
+
+
 
 int main() {
 //	game variables
 	char descriptor = '\0';
 	int playerHP = 0;
 	int playerGP = 0;
+	int playerLVL = 0;
 	int npcNum = 0;
 //game code starts here
-	titleScreen();
 	turn_on_ncurses();
 	Map map;
 	int x = Map::SIZE / 2, y = Map::SIZE / 2; //Start in middle of the world
@@ -133,15 +174,15 @@ int main() {
 		if (ch == 'q' || ch == 'Q') break;//menu button etc need to be right here
 //shopkeeper
 		else if (ch == 's' || ch == 'S') {
-			turn_off_ncurses();
-			//shopkeeper function loop
-			turn_on_ncurses();		
-			clear();
-			map.draw(x, y);
-			mvprintw(Map::DISPLAY + 1, 0, "X: %i Y: %i Health: %i Gold: %i\n", x, y, playerHP, playerGP );
-//			function to print tile description
-			description(descriptor);
-			refresh();
+//			turn_off_ncurses();
+			//shopkeeper function
+//			drawOn(x,y,map,playerHP,playerGP,descriptor);
+		}
+//inventory
+		else if (ch == 'i' || ch == 'I') {
+//			turn_off_ncurses();
+			//inventory function
+//			drawOn(x,y,map,playerHP,playerGP,descriptor);
 		}
 //character movement	
 		else if (ch == RIGHT) {
@@ -159,31 +200,34 @@ int main() {
 		} else if (ch == ERR) { //No keystroke
 			; //Do nothing
 		}
+// Hero starts off on Hero tile, this forces a title screen to appear on game start up
+		if (isHero(x,y,map) == true) {
+			turn_off_ncurses();
+			map.setTile(x,y,Map::OPEN);
+			titleScreen();
+			drawOn(x,y,map,playerHP,playerGP,descriptor);
+		}
 //collsion with walls x and y will dectect if wall and then push char back to prior pos
 		if (collide(x,y,map) == true){
 			x = old_x;
 			y = old_y;
 			mvprintw(Map::DISPLAY +2,0,"This is a freaking wall");
 		}
-//Monster interaction starts combatloop
+//Monster interaction starts combatloop then sets tile to treasure and pushes player back to old pos
 		else if (isMonster(x,y,map) == true) {
 			//combat function loop
-//			turn_off_ncurses();
-			//	add asci monsters
-//	do differnet actions, maybe weak attack and strong attack, defend, maybe a run option?   
-
-	
-/*	turn this back on to exit combat loop
-			turn_on_ncurses();		
-			clear();
-			map.draw(x, y);
-			mvprintw(Map::DISPLAY + 1, 0, "X: %i Y: %i Health: %i Gold: %i\n", x, y, playerHP, playerGP );
-			description(descriptor); //function to set tile description
-			refresh();
-*/
+			turn_off_ncurses();
+//add asci monsters
+//do differnet actions, maybe weak attack and strong attack, defend, maybe a run option? 
+//combat function
+			combat();
 			map.setTile(x,y,Map::TREASURE);
+			x = old_x;
+			y = old_y;
+//redraws map after combat ends 
+			drawOn(x,y,map,playerHP,playerGP,descriptor);		
 		}		
-//treasure player will gain 1 gold 
+//treasure player will gain 1 gold after moving over the tile
 		else if(isTreasure(x,y,map) == true) {
 			playerGP++;
 			descriptor = Map::TREASURE;
@@ -196,51 +240,41 @@ int main() {
 			x = old_x;
 			y = old_y;
 		}
-//ADD NPC interaction loop
+// NPC interaction
 		else if(isNpc(x,y,map) == true){ 
 			descriptor = Map::NPC;
 			npcNum++;
-// Turn this on to enter NPC loop
+// clears map to enter NPC interaction
 			turn_off_ncurses();
-			clear();
 			//NPC DIALOG function
-
-			while (true) {
-				int playerChoice = 0;
-				cout << "1) quit 2) FIXME";
-				cin >> playerChoice;
-				if (playerChoice == 1) {
-					break;
-				}
-				else {
-					continue;
-				}
-			}
+			    while (true) {
+       				if (npcNum == 1) {
+       					combat();
+						break;
+					}
+       				if (npcNum == 2) {
+           				combat();
+						break;
+					}
+					else {
+						break;
+					}
+  		 		 }
+			map.setTile(x,y,Map::OPEN);
 			x = old_x;
 			y = old_y;
-//  turn this back on to exit NPC interaction loop
-//			drawOn(x,y,map,playerHP,playerGP,descriptor)
-			turn_on_ncurses();
-            clear();
-            map.draw(x, y);
-            mvprintw(Map::DISPLAY + 1, 0, "X: %i Y: %i Health: %i Gold: %i\n", x, y, playerHP, playerGP );
-            description(descriptor); //function to set tile description
-            refresh();
-
-
+// redraws map after NPC function ends
+			drawOn(x,y,map,playerHP,playerGP,descriptor);
 		}
-		
-		
 		//Stop flickering by only redrawing on a change
-		if (x != old_x or y != old_y or descriptor == Map::WATER) {
+		if (x != old_x or y != old_y or descriptor == Map::WATER or descriptor == Map::MONSTER) {
 			clear();
 			map.draw(x, y);
 			mvprintw(Map::DISPLAY + 1, 0, "X: %i Y: %i Health: %i Gold: %i\n", x, y, playerHP, playerGP );
 			description(descriptor); //function to set tile description
 			refresh();
 		}
-
-		
+//clean up section
 		old_x = x;
 		old_y = y;
 		descriptor = '\0';
@@ -249,6 +283,4 @@ int main() {
 	}
 
 	turn_off_ncurses();
-
-	}
-
+}
