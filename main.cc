@@ -118,15 +118,7 @@ bool isHero(int posX, int posY, Map hero){
 		return false;
 	}
 }
-// title screen function
-void titleScreen(){
-	while(true){
-		cout << "     Title Screen!\n     Please enter player name\n";
-		string name;
-		cin >> name;
-		if (cin) break;
-	}
-}
+
 
 //shopkeeper function
 //Kajiit has wares if you have coin
@@ -134,6 +126,7 @@ void titleScreen(){
 
 
 // Combat function
+//test loop
 void combat() {
 	while (true) {	
 		int playerChoice = 0;
@@ -159,10 +152,12 @@ void combat() {
 
 int main() {
 //	game variables
+	string playerName = "";
 	char descriptor = '\0';
-	int playerHP = 0;
+	int playerHP = 10;
 	int playerGP = 0;
 	int playerLVL = 0;
+	int playerCrown = 0;
 	int npcNum = 0;
 //game code starts here
 	turn_on_ncurses();
@@ -203,8 +198,10 @@ int main() {
 // Hero starts off on Hero tile, this forces a title screen to appear on game start up
 		if (isHero(x,y,map) == true) {
 			turn_off_ncurses();
+// this changes the map tile so that the player can't reaccess the title page
 			map.setTile(x,y,Map::OPEN);
-			titleScreen();
+			cout << "\n\n          WELCOME TO THE GRAND ADVENTURES\n                        OF\n               KYK THE GOBLIN KING\n\n\n\n        Please enter player name to start\n";
+			cin >> playerName;
 			drawOn(x,y,map,playerHP,playerGP,descriptor);
 		}
 //collsion with walls x and y will dectect if wall and then push char back to prior pos
@@ -241,18 +238,50 @@ int main() {
 			y = old_y;
 		}
 // NPC interaction
-		else if(isNpc(x,y,map) == true){ 
-			descriptor = Map::NPC;
+		else if(isNpc(x,y,map) == true){
 			npcNum++;
 // clears map to enter NPC interaction
 			turn_off_ncurses();
 			//NPC DIALOG function
 			    while (true) {
        				if (npcNum == 1) {
-       					combat();
+						cout << "test";
+       					combat();	
 						break;
 					}
        				if (npcNum == 2) {
+           				combat();
+						break;
+					}
+       				if (npcNum == 3) {
+       					combat();
+						break;
+					}
+       				if (npcNum == 4) {
+           				combat();
+						break;
+					}
+       				if (npcNum == 5) {
+       					combat();
+						break;
+					}
+       				if (npcNum == 6) {
+           				combat();
+						break;
+					}
+       				if (npcNum == 7) {
+       					combat();
+						break;
+					}
+       				if (npcNum == 8) {
+           				combat();
+						break;
+					}
+       				if (npcNum == 9) {
+       					combat();
+						break;
+					}
+       				if (npcNum == 10) {
            				combat();
 						break;
 					}
@@ -266,6 +295,8 @@ int main() {
 // redraws map after NPC function ends
 			drawOn(x,y,map,playerHP,playerGP,descriptor);
 		}
+
+
 		//Stop flickering by only redrawing on a change
 		if (x != old_x or y != old_y or descriptor == Map::WATER or descriptor == Map::MONSTER) {
 			clear();
@@ -274,6 +305,16 @@ int main() {
 			description(descriptor); //function to set tile description
 			refresh();
 		}
+//need to add a win check and win screen
+//Game over check and game over screen
+		if (playerHP < 1) {
+			turn_off_ncurses();
+			system("clear");
+			cout << "\n\n\n                  " << playerName << "\n\n               YOU DIED!\n\n               GAME OVER\n\n";
+			usleep(1000000);
+			break;
+		}
+
 //clean up section
 		old_x = x;
 		old_y = y;
