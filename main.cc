@@ -245,10 +245,21 @@ int main() {
 			//NPC DIALOG function
 			    while (true) {
        				if (npcNum == 1) {
-						cout << "test";
-       					combat();	
-						break;
+						while (true){
+							int diagChoice;
+							cout << "Elf: Help me please mister goblin!\nKyk: It's mister King Goblin to you!\nPress anynumber to continue.\n";
+							cin >> diagChoice;
+							if (!cin) {
+								break;
+							}
+							cout << "Elf: Okay then...\n";
+							cin >> diagChoice;
+							if (!cin) {
+								break;
+							}
+						}
 					}
+					
        				if (npcNum == 2) {
            				combat();
 						break;
