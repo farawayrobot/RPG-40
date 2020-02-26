@@ -129,17 +129,22 @@ bool isHero(int posX, int posY, Map hero){
 //test loop
 void combat() {
 	while (true) {	
-		int playerChoice = 0;
-		cout << "1) quit 2) FIXME\n";
-		cin >> playerChoice;
-			if (playerChoice == 1) {
-				break;
-			}
-			else {
-				break;
-			//	continue;
-			}
-		}	
+       	char diagChoice;
+		cout << "_______________________________________________________\n_______________________________________________________\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n_______________________________________________________\n_______________________________________________________\n\nPress c to continue, r to runaway:";
+		cin >> diagChoice;
+		if (diagChoice == 'r' || diagChoice == 'R'){
+			diagChoice = '\0';
+			break;
+		}
+		else if (diagChoice == 'c' || diagChoice == 'C'){
+			system("clear");
+			//need to put combat game in here
+			cout << "hit anything to exit";
+			cin >> diagChoice;
+			diagChoice = '\0';
+			break;
+		}
+	}
 }
 
 // inventory function
@@ -200,8 +205,18 @@ int main() {
 			turn_off_ncurses();
 // this changes the map tile so that the player can't reaccess the title page
 			map.setTile(x,y,Map::OPEN);
-			cout << "\n\n          WELCOME TO THE GRAND ADVENTURES\n                        OF\n               KYK THE GOBLIN KING\n\n\n\n        Please enter player name to start\n";
+			// line is 55 underscores
+			cout << "_______________________________________________________\n_______________________________________________________\n\n          WELCOME TO THE GRAND ADVENTURES\n                        OF\n               KYK THE GOBLIN KING\n\n\n\n        Please enter player name to start\n\n_______________________________________________________\n_______________________________________________________\n\nName:";
 			cin >> playerName;
+			system("clear");
+			cout << "_______________________________________________________\n_______________________________________________________\n\nLONG LONG AGO IN THE DISTANT LAND OF LEVIATHAN IN\nTHE WILD AND CHAOTIC NORTH THERE WAS A SMALL GOBLIN\nNAMED KYK. SMALL EVEN AMOUNGST OTHER GOBLINS KYK WAS\nONCE RIDICULED BY EVERYONE, BUT NO LONGER BECAUSE\nKYK THROUGH SURE TENACITY AND A STRONG BITE BECAME\nTHE KING OF ALL GOBLIN KIND. HIS SMALLER THAN\nAVERAGE HEAD MADE THE BURDEN OF WEARING ALL FIVE\nCROWNS OF THE ONCE SEPERATE GOBLIN NATIONS IMPOSSIBLE,\nSO UPON HIS CORINATION KYK HAD ALL FIVE CROWNS\nFORGED INTO A GOLDEN CHAIN HE WORE AROUND HIS NECK.\n\nAFTER SEVERAL WEEKS KYK GREW TIRED OF HIS KINGLY\nDUTIES AND WANDERED OFF TO FIND SOME ADVENTURE.\nAND ADVENTURE HE DID FIND! SLAYING DRAGONS, ELVES,\nDWARFS, HOOMANS, EVEN A GIANT! NO BEAST OR FOE\nCOULD STAND BEFORE THE WHIRLING BLADES OF THE KING\nOF ALL GOBLINS. BUT THEN ONE NIGHT AT A TAVERN\nKYK LOST EVERYTHING HE OWNED IN A GAME OF CARDS\nTO A SHREWED AND CALCULATING KAJIIT. NOW WE JOIN OUR\nGOBLIN KING THE MORNING AFTER TRYING TO BUY\nBACK HIS POSSESSIONS FROM THE DEVIOUS KAJIIT.\n_______________________________________________________\n_______________________________________________________\n\n";
+			cout << "       Press C to continue...\n:";
+			char startGame;
+			cin >> startGame;
+			if (startGame != 'c' || startGame != 'c') {
+				system("clear");
+				return 0;
+			}			
 			drawOn(x,y,map,playerHP,playerGP,descriptor);
 		}
 //collsion with walls x and y will dectect if wall and then push char back to prior pos
@@ -243,68 +258,64 @@ int main() {
 // clears map to enter NPC interaction
 			turn_off_ncurses();
 			//NPC DIALOG function
-			    while (true) {
-       				if (npcNum == 1) {
-						while (true){
-							int diagChoice;
-							cout << "Elf: Help me please mister goblin!\nKyk: It's mister King Goblin to you!\nPress anynumber to continue.\n";
-							cin >> diagChoice;
-							if (!cin) {
-								break;
-							}
-							cout << "Elf: Okay then...\n";
-							cin >> diagChoice;
-							if (!cin) {
-								break;
-							}
-						}
-					}
-					
-       				if (npcNum == 2) {
-           				combat();
-						break;
-					}
-       				if (npcNum == 3) {
-       					combat();
-						break;
-					}
-       				if (npcNum == 4) {
-           				combat();
-						break;
-					}
-       				if (npcNum == 5) {
-       					combat();
-						break;
-					}
-       				if (npcNum == 6) {
-           				combat();
-						break;
-					}
-       				if (npcNum == 7) {
-       					combat();
-						break;
-					}
-       				if (npcNum == 8) {
-           				combat();
-						break;
-					}
-       				if (npcNum == 9) {
-       					combat();
-						break;
-					}
-       				if (npcNum == 10) {
-           				combat();
+			while (true) {
+       			if (npcNum == 1) {
+					char diagChoice;
+					cout << "_______________________________________________________\n_______________________________________________________\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n_______________________________________________________\n_______________________________________________________\n\nPress c to continue:";
+					cin >> diagChoice;
+					if (diagChoice != 'c' || diagChoice != 'C') {
 						break;
 					}
 					else {
-						break;
+						continue;
 					}
-  		 		 }
-			map.setTile(x,y,Map::OPEN);
-			x = old_x;
-			y = old_y;
+				}
+					
+       			if (npcNum == 2) {
+           				combat();
+						break;
+				}
+       			if (npcNum == 3) {
+       					combat();
+						break;
+				}
+				if (npcNum == 4) {
+           				combat();
+						break;
+				}
+       			if (npcNum == 5) {
+       					combat();
+						break;
+				}
+				if (npcNum == 6) {
+           				combat();
+						break;
+				}
+       			if (npcNum == 7) {
+       					combat();
+						break;
+				}
+   				if (npcNum == 8) {
+					combat();
+						break;
+				}
+       			if (npcNum == 9) {
+       					combat();
+						break;
+				}
+   				if (npcNum == 10) {
+           				combat();
+						break;
+				}
+				else {
+					break;
+				}
+  	 		 }
+		map.setTile(x,y,Map::OPEN);
+		x = old_x;
+		y = old_y;
 // redraws map after NPC function ends
-			drawOn(x,y,map,playerHP,playerGP,descriptor);
+		drawOn(x,y,map,playerHP,playerGP,descriptor);
 		}
 
 
