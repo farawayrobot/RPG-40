@@ -40,14 +40,11 @@ void description(char tileDescriptor){
 	if (tileDescriptor == Map::TREASURE){
 		mvprintw(Map::DISPLAY +2,0,"BOOTY!"); 
 	}
-	else if(tileDescriptor == Map::MONSTER){
-        mvprintw(Map::DISPLAY +2,0,"ARRG!");
-	}
 	else if (tileDescriptor == Map::WATER){
-        mvprintw(Map::DISPLAY +2,0,"GLUB GLUB GLUB!");
+        mvprintw(Map::DISPLAY +2,0,"GLUB GLUB GLUB! KYK HATES SWIMMING");
 	}
 	else {
-		mvprintw(Map::DISPLAY +2,0,"Empty land");
+		mvprintw(Map::DISPLAY +2,0,"DESOLATE AND BARREN LAND STRETCHES ALL AROUND YOU");
 	}
 }
 //redraws ncurses map
@@ -120,19 +117,14 @@ bool isHero(int posX, int posY, Map hero){
 	}
 }
 
-
-//shopkeeper function
-//Kajiit has wares if you have coin
-//ASCII CAT
-
-
 // Combat function
 //test loop
 bool combat(int playerLvl, int& playerHP, int playerDP, int sword) {
 	while (true) {	
        	char combatChoice;
+		srand(time(0));
 		cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl; 
-		cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
+		cout << "\n\n\n\n\n\n\n     ARRRG A SCARY MONSTER!!!\n\n\n\n\n\n\n\n\n\n\n\n";
 		cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl << endl <<"\nPress c to continue, r to runaway:";
 		cin >> combatChoice;
 		if (combatChoice == 'r' || combatChoice == 'R'){
@@ -140,16 +132,61 @@ bool combat(int playerLvl, int& playerHP, int playerDP, int sword) {
 			return false;
 		}
 		else if (combatChoice == 'c' || combatChoice == 'C'){
-			system("clear");
-			//need to put combat game in here
-			playerHP--;
-			cout << "hit anything to exit";
-			cin >> combatChoice;
 			combatChoice = '\0';
+			system("clear");
+		}
+			//need to put combat game in here
+			
+		int outcome = 0;
+		int playerAtk = 0;
+		int mobAtk = 0;
+		int mobHP = 1;
+		while (true) {
+			char combatChoice;
+			cout << "Player Health:" << playerHP << endl;
+//comment out mob HP before deployment
+			cout << "Mob HP:" << mobHP << endl;
+     		cout << "\nPress A for attack or D for defend:";
+			cin >> combatChoice;
+			if (combatChoice == 'A'|| combatChoice == 'a') {
+				playerAtk =(rand() % 10 + playerLvl) + sword;
+				cout << "Kyk Dealt " << playerAtk << " Damage!\n";
+				mobHP = mobHP - playerAtk;
+				mobAtk = (rand() % 10 + 1) - playerDP;
+				cout << "The monster dealt " <<  mobAtk << " Damage!\n";
+				playerHP -= mobAtk;
+			}
+			else if (combatChoice == 'D' || combatChoice == 'd') {
+				playerAtk = 0;
+            	cout << "Defend! Kyk deals no damage!\n";
+           		mobHP -= playerAtk;
+           	 	mobAtk = (rand() % 10 + 1) - (playerDP * 2);
+           	 	cout << "The monster dealt " << mobAtk << " Damage!\n";
+            	playerHP = playerHP - mobAtk;
+			}
+			if (playerHP < 1){
+				system("clear");
+				break;
+			}
+			else if (mobHP < 1) {
+				system("clear");
+				break;
+			}
+		}
+		if (playerHP < 1) {
+			return false;
+		}
+		else {
 			return true;
 		}
 	}
+
 }
+	
+
+//shopkeeper function
+//Kajiit has wares if you have coin
+//ASCII CAT
 
 // inventory function
 
@@ -158,14 +195,14 @@ int main() {
 //	game variables
 	string playerName = "";
 	char descriptor = '\0';
-	int playerHP = 10;
-	int playerDP = 0;
+	int playerLvl = 0;
+	int playerHP = 20 + (playerLvl * 2);
+	int playerDP = 1;
 // player defense points starts at 0. player buys better armor and this goes up 
 	int playerSword = 1;
 // player sword starts at 1. player buys better weapons this goes up by 1
 	int playerGP = 0;
 	int mobKills = 0;
-	int playerLvl = 0;
 // player lvl goes up after every 3 monsters defeated
 	int playerCrown = 0;
 	int npcNum = 0;
@@ -217,7 +254,7 @@ int main() {
 			cin >> playerName;
 			system("clear");
 			cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl;
-			cout << "\nLONG LONG AGO IN THE DISTANT LAND OF LEVIATHAN IN\nTHE WILD AND CHAOTIC NORTH THERE WAS A SMALL GOBLIN\nNAMED KYK. SMALL EVEN AMOUNGST OTHER GOBLINS KYK WAS\nONCE RIDICULED BY EVERYONE, BUT NO LONGER BECAUSE\nKYK THROUGH SURE TENACITY AND A STRONG BITE BECAME\nTHE KING OF ALL GOBLIN KIND. HIS SMALLER THAN\nAVERAGE HEAD MADE THE BURDEN OF WEARING ALL FIVE\nCROWNS OF THE ONCE SEPERATE GOBLIN NATIONS IMPOSSIBLE,\nSO UPON HIS CORINATION KYK HAD ALL FIVE CROWNS\nFORGED INTO A GOLDEN CHAIN HE WORE AROUND HIS NECK.\n\nAFTER SEVERAL WEEKS KYK GREW TIRED OF HIS KINGLY\nDUTIES AND WANDERED OFF TO FIND SOME ADVENTURE.\nAND ADVENTURE HE DID FIND! SLAYING DRAGONS, ELVES,\nDWARFS, HOOMANS, EVEN A GIANT! NO BEAST OR FOE\nCOULD STAND BEFORE THE WHIRLING BLADES OF THE KING\nOF ALL GOBLINS. BUT THEN ONE NIGHT AT A TAVERN\nKYK LOST EVERYTHING HE OWNED IN A GAME OF CARDS\nTO A SHREWED AND CALCULATING KAJIIT. NOW WE JOIN OUR\nGOBLIN KING THE MORNING AFTER TRYING TO BUY\nBACK HIS POSSESSIONS FROM THE DEVIOUS KAJIIT.\n\n";
+			cout << "\n  LONG LONG AGO IN THE DISTANT LAND OF LEVIATHAN IN\n  THE WILD AND CHAOTIC NORTH THERE WAS A SMALL GOBLIN\n  NAMED KYK. SMALL EVEN AMOUNGST OTHER GOBLINS KYK WAS\n  ONCE RIDICULED BY EVERYONE, BUT NO LONGER BECAUSE\n  KYK THROUGH SURE TENACITY AND A STRONG BITE BECAME\n  THE KING OF ALL GOBLIN KIND. HIS SMALLER THAN\n  AVERAGE HEAD MADE THE BURDEN OF WEARING ALL FIVE\n  CROWNS OF THE ONCE SEPERATE GOBLIN NATIONS IMPOSSIBLE,\n  SO UPON HIS CORINATION KYK HAD ALL FIVE CROWNS\n  FORGED INTO A GOLDEN CHAIN HE WORE AROUND HIS NECK.\n\n  AFTER SEVERAL WEEKS KYK GREW TIRED OF HIS KINGLY\n  DUTIES AND WANDERED OFF TO FIND SOME ADVENTURE.\n  AND ADVENTURE HE DID FIND! SLAYING DRAGONS, ELVES,\n  DWARFS, HOOMANS, EVEN A GIANT! NO BEAST OR FOE\n  COULD STAND BEFORE THE WHIRLING BLADES OF THE KING\n  OF ALL GOBLINS. BUT THEN ONE NIGHT AT A TAVERN\n  KYK LOST EVERYTHING HE OWNED IN A GAME OF CARDS\n  TO A SHREWED AND CALCULATING KAJIIT.\n\n\n NOW WE JOIN OUR GOBLIN KING THE MORNING AFTER.\n  IT'S YOUR JOB AS THE PLAYER TO COLLECT MONEY TO BUY BACK\n  HIS POSSESSIONS FROM THE DEVIOUS KAJIIT,\n  AND FIND THE FIVE GOLBIN CROWNS HE HID IN THE\n  WILDERNESS OF THE NORTH!\n\n";
 			cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl;
 			cout << "\n       Press C to continue...\n:";
 			char startGame;
@@ -299,7 +336,7 @@ int main() {
            				break;
 					}
 				}	
-       			if (npcNum == 2) {
+				else if (npcNum == 2) {
            			char diagChoice;
 					cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl;
        				cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
@@ -321,7 +358,7 @@ int main() {
            				break;
 					}
 				}
-       			if (npcNum == 3) {
+				else if (npcNum == 3) {
            			char diagChoice;
 					cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl;
        				cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
@@ -343,7 +380,7 @@ int main() {
            				break;
 					}
 				}
-				if (npcNum == 4) {
+				else if (npcNum == 4) {
            			char diagChoice;
 					cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl;
        				cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
@@ -365,7 +402,7 @@ int main() {
            				break;
 					}
 				}
-       			if (npcNum == 5) {
+				else if (npcNum == 5) {
            			char diagChoice;
 					cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl;
        				cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
@@ -387,7 +424,7 @@ int main() {
            				break;
 					}
 				}
-				if (npcNum == 6) {
+				else if (npcNum == 6) {
            			char diagChoice;
 					cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl;
        				cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
@@ -409,7 +446,7 @@ int main() {
            				break;
 					}
 				}
-       			if (npcNum == 7) {
+				else if (npcNum == 7) {
            			char diagChoice;
 					cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl;
        				cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
@@ -431,7 +468,7 @@ int main() {
            				break;
 					}
 				}
-   				if (npcNum == 8) {
+				else if (npcNum == 8) {
            			char diagChoice;
 					cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl;
        				cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
@@ -453,7 +490,7 @@ int main() {
            				break;
 					}
 				}
-       			if (npcNum == 9) {
+				else if (npcNum == 9) {
            			char diagChoice;
 					cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl;
        				cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
@@ -475,7 +512,7 @@ int main() {
            				break;
 					}
 				}
-   				if (npcNum == 10) {
+				else if (npcNum == 10) {
            			char diagChoice;
 					cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl;
        				cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
@@ -496,9 +533,6 @@ int main() {
             			diagChoice = '\0';
            				break;
 					}
-				}
-				else {
-					break;
 				}
   	 		 }
 		x = old_x;
@@ -506,9 +540,7 @@ int main() {
 // redraws map after NPC function ends
 		drawOn(x,y,map,playerHP,playerGP,playerLvl,descriptor);
 		}
-
-
-		//Stop flickering by only redrawing on a change
+//Stop flickering by only redrawing on a change
 		if (x != old_x or y != old_y or descriptor == Map::WATER or descriptor == Map::MONSTER) {
 			clear();
 			map.draw(x, y);
@@ -517,12 +549,26 @@ int main() {
 			refresh();
 		}
 //need to add a win check and win screen
+		if (playerCrown = 5) {
+			char quitButton = '\0';
+            turn_off_ncurses();
+            system("clear");
+			cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl;
+            cout << "\n\n\n  " << playerName << "YOU WIN!!\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
+            cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl << endl <<"\nPress q to Quit:";
+			cin >> quitButton;
+           	break;
+		}
+
 //Game over check and game over screen
 		if (playerHP < 1) {
+			char quitButton = '\0';
 			turn_off_ncurses();
 			system("clear");
-			cout << "\n\n\n                  " << playerName << "\n\n               YOU DIED!\n\n               GAME OVER\n\n";
-			usleep(1000000);
+			cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl;
+            cout << "\n\n\n  " << playerName << "YOU DIED!!\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
+            cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl << endl <<"\nPress q to Quit:";
+			cin >> quitButton;
 			break;
 		}
 
