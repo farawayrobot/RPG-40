@@ -118,7 +118,6 @@ bool isHero(int posX, int posY, Map hero){
 }
 
 // Combat function
-//test loop
 bool combat(int playerLvl, int& playerHP, int playerDP, int sword) {
 	while (true) {	
        	char combatChoice;
@@ -549,7 +548,7 @@ int main() {
 			refresh();
 		}
 //need to add a win check and win screen
-		if (playerCrown = 5) {
+		if (playerCrown == 5) {
 			char quitButton = '\0';
             turn_off_ncurses();
             system("clear");
