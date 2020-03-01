@@ -40,6 +40,9 @@ void description(char tileDescriptor){
 	if (tileDescriptor == Map::TREASURE){
 		mvprintw(Map::DISPLAY +2,0,"BOOTY!"); 
 	}
+	else if (tileDescriptor == Map::WALL) {
+		mvprintw(Map::DISPLAY +2,0,"AN ANCIENT AND CRUMBLING STONE WALL");
+	}
 	else if (tileDescriptor == Map::WATER){
         mvprintw(Map::DISPLAY +2,0,"GLUB GLUB GLUB! KYK HATES SWIMMING");
 	}
@@ -117,77 +120,190 @@ bool isHero(int posX, int posY, Map hero){
 	}
 }
 
+
+// this function just displays the monster inside of the combat function
+bool encounter() {
+       	char combatChoice = '\0';
+		cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl;
+        cout << "\n\n\n\n\n\n\n     ARRRG A SCARY MONSTER!!!\n\n\n\n\n\n\n\n\n\n\n\n";
+        cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl << endl <<"\nPress c to continue, r to runaway:";
+        cin >> combatChoice;
+        if (combatChoice == 'r' || combatChoice == 'R'){
+            return false;
+        }
+        else if (combatChoice == 'c' || combatChoice == 'C'){
+			return true;
+        }
+		return true;
+}
+
+
+
 // Combat function
-bool combat(int playerLvl, int& playerHP, int playerDP, int sword) {
-	while (true) {	
-       	char combatChoice;
-		srand(time(0));
-		cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl; 
-		cout << "\n\n\n\n\n\n\n     ARRRG A SCARY MONSTER!!!\n\n\n\n\n\n\n\n\n\n\n\n";
-		cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl << endl <<"\nPress c to continue, r to runaway:";
-		cin >> combatChoice;
-		if (combatChoice == 'r' || combatChoice == 'R'){
-			combatChoice = '\0';
-			return false;
-		}
-		else if (combatChoice == 'c' || combatChoice == 'C'){
-			combatChoice = '\0';
-			system("clear");
-		}
-			//need to put combat game in here
-			
-		int outcome = 0;
-		int playerAtk = 0;
-		int mobAtk = 0;
-		int mobHP = 1;
-		while (true) {
-			char combatChoice;
-			cout << "Player Health:" << playerHP << endl;
+bool combat(int playerLvl, int& playerHP, int playerDP, int sword, int& magic ) {
+	srand(time(0));
+	int outcome = 0;
+	int playerAtk = 0;
+	int mobAtk = 0;
+	int mobHP = 0;
+
+	if (playerLvl == 1) mobHP = 30;
+	if (playerLvl == 2) mobHP = 50;
+	if (playerLvl == 3) mobHP = 130;
+	if (playerLvl == 4) mobHP = 190;
+	if (playerLvl == 5) mobHP = 220;
+	if (playerLvl > 5 && sword == 5 && magic == 5) mobHP = 400;
+
+	if (encounter() == false) {
+		return false;
+	}
+	else {
+		system("clear");
+		while(true) {
+		char combatChoice;
+		cout << "Player Health:" << playerHP << endl;
 //comment out mob HP before deployment
-			cout << "Mob HP:" << mobHP << endl;
-     		cout << "\nPress A for attack or D for defend:";
-			cin >> combatChoice;
-			if (combatChoice == 'A'|| combatChoice == 'a') {
-				playerAtk =(rand() % 10 + playerLvl) + sword;
-				cout << "Kyk Dealt " << playerAtk << " Damage!\n";
-				mobHP = mobHP - playerAtk;
-				mobAtk = (rand() % 10 + 1) - playerDP;
-				cout << "The monster dealt " <<  mobAtk << " Damage!\n";
-				playerHP -= mobAtk;
+		cout << "Mob HP:" << mobHP << endl; 
+  		cout << "\nPress A for attack  D for defend  R for rabid attack M for magic:";
+		cin >> combatChoice;
+		if (combatChoice == 'A'|| combatChoice == 'a') {
+			playerAtk =(rand() % 10 + playerLvl) + sword;
+			cout << "Kyk Dealt " << playerAtk << " Damage!\n";
+			mobHP = mobHP - playerAtk;
+			if (mobHP < 1) break;
+			mobAtk = (rand() % 10 + 1) - playerDP;
+			cout << "The monster dealt " <<  mobAtk << " Damage!\n";
+			playerHP -= mobAtk;
+		}
+		else if (combatChoice == 'D' || combatChoice == 'd') {
+			playerAtk = 0;
+			cout << "Defend! Kyk deals no damage!\n";
+           	mobHP -= playerAtk;
+      	 	mobAtk = (rand() % 10 + 1) - (playerDP * 2);
+      	 	cout << "The monster dealt " << mobAtk << " Damage!\n";
+           	playerHP = playerHP - mobAtk;
+		}
+		else if (combatChoice == 'R' || combatChoice == 'r'){
+			playerAtk =(rand() % 20) + playerLvl + sword;
+			cout << "Kyk Dealt " << playerAtk << " Damage!\n";
+			mobHP = mobHP - playerAtk;
+            if (mobHP < 1) break;
+            mobAtk = (rand() % 10 + 10) * 2;
+            cout << "The monster dealt " <<  mobAtk << " Damage!\n";
+            playerHP -= mobAtk;
+		}
+		else if (combatChoice == 'M' || combatChoice == 'm'){
+			playerAtk =(rand() % 30) * magic * sword;
+			if (rand() % 2 == 0) {
+			playerHP -= playerAtk / playerLvl;
 			}
-			else if (combatChoice == 'D' || combatChoice == 'd') {
-				playerAtk = 0;
-            	cout << "Defend! Kyk deals no damage!\n";
-           		mobHP -= playerAtk;
-           	 	mobAtk = (rand() % 10 + 1) - (playerDP * 2);
-           	 	cout << "The monster dealt " << mobAtk << " Damage!\n";
-            	playerHP = playerHP - mobAtk;
+			if (playerAtk == 0) {
+				 cout << "Kyk has no Magic!";
 			}
-			if (playerHP < 1){
-				system("clear");
-				break;
-			}
-			else if (mobHP < 1) {
-				system("clear");
-				break;
+			else {
+			mobHP = mobHP - playerAtk;
+            if (mobHP < 1) break;
+            mobAtk = (rand() % 10 + 1) - playerDP;
+            cout << "The monster dealt " <<  mobAtk << " Damage!\n";
+            playerHP -= mobAtk;
 			}
 		}
-		if (playerHP < 1) {
-			return false;
+	if (playerHP < 1){
+		system("clear");
+		break;
+	}
+
+	else if (mobHP < 1)	{
+		system("clear");
+		break;
+	}
+		}
+
+	
+	if (playerHP < 1) {
+		return false;
 		}
 		else {
 			return true;
 		}
 	}
+}
+
+//print from file loop
+void dialog (int npcNum) {
+	while (true) {
+		char diagChoice;
+		string temp;
+		string temp2;
+		cout << setw(60) << setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl;
+		if (npcNum == 1) {
+			ifstream inFile("NPC1.txt");
+			while (getline(inFile,temp,'\n')){
+				temp += temp + " ";	
+				}
+			cout << temp;
+			}	
+
+
+
+
+
+			/*
+//			while (inFile) {
+//				inFile >> temp;
+//				if (!inFile) break;
+				cout << temp << " ";
+			cout << endl;
+		}
+
+		*/
+
+		else if (npcNum == 2) {
+			ifstream inFile("NPC2.txt");
+		}
+		else if (npcNum == 3) {
+			ifstream inFile("NPC3.txt");
+		}
+		else if (npcNum == 4) {
+			ifstream inFile("NPC4.txt");
+		}
+		else if (npcNum == 5) {
+			ifstream inFile("NPC5.txt");
+		}
+		else if (npcNum == 6) {
+			ifstream inFile("NPC6.txt");
+		}
+		else if (npcNum == 7) {
+			ifstream inFile("NPC7.txt");
+		}
+		else if (npcNum == 8) {
+			ifstream inFile("NPC8.txt");
+		}
+		else if (npcNum == 9) {
+			ifstream inFile("NPC9.txt");
+		}
+		else if (npcNum == 10) {
+			ifstream inFile("NPC10.txt");
+		}
+		cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl;
+		cout << endl << "Press q to quit\n";
+		cin >> diagChoice;
+    	if (diagChoice == 'q' || diagChoice == 'Q'){
+   			diagChoice = '\0';
+			break;
+    	}
+	}
 
 }
-	
 
 //shopkeeper function
 //Kajiit has wares if you have coin
 //ASCII CAT
 
 // inventory function
+//swords, 1 = bareknuckles, 2 = Dull Rusty Blade, 3 = Steel Short Sword, 4 = Cursed blade 'Misery's Edge',5 = Susan
+//armor, 1 = shirtless, 2 = leather shirt, 3 = iron chest peice,
+//magic 0 = no magic, 1 = Finger Guns, 2 = Noxious Burp, 3 = 
 
 // main
 int main() {
@@ -199,10 +315,10 @@ int main() {
 	int playerDP = 1;
 // player defense points starts at 0. player buys better armor and this goes up 
 	int playerSword = 1;
+	int magic = 0;
 // player sword starts at 1. player buys better weapons this goes up by 1
 	int playerGP = 0;
 	int mobKills = 0;
-// player lvl goes up after every 3 monsters defeated
 	int playerCrown = 0;
 	int npcNum = 0;
 //game code starts here
@@ -268,7 +384,7 @@ int main() {
 		if (collide(x,y,map) == true){
 			x = old_x;
 			y = old_y;
-			mvprintw(Map::DISPLAY +2,0,"This is a freaking wall");
+			descriptor = Map::WALL;
 		}
 //treasure player will gain 1 gold after moving over the tile
 		else if(isTreasure(x,y,map) == true) {
@@ -287,10 +403,8 @@ int main() {
 		else if (isMonster(x,y,map) == true) {
 			//combat function loop
 			turn_off_ncurses();
-//add asci monsters
-//do differnet actions, maybe weak attack and strong attack, defend, maybe a run option? 
 //combat function
-			if (combat(playerLvl,playerHP, playerDP, playerSword) == true){
+			if (combat(playerLvl,playerHP, playerDP, playerSword,magic) == true){
 				mobKills++;
 				map.setTile(x,y,Map::TREASURE);
 			}
@@ -314,233 +428,54 @@ int main() {
 			//NPC DIALOG function
 			while (true) {
        			if (npcNum == 1) {
-					char diagChoice;
-					cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl;
-       				cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
-        			cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl << endl <<"\nPress c to Continue, q to Quit:";
-        			cin >> diagChoice;
-       				if (diagChoice == 'q' || diagChoice == 'Q'){
-            			diagChoice = '\0';
-           				break;
-       				}	
-					system("clear");
-					map.setTile(x,y,Map::OPEN);
-					if (diagChoice == 'c' || diagChoice == 'C') {
-						cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl;
-       					cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
-        				cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl << endl <<"\nPress c to Continue:";
-        				cin >> diagChoice;
-					} else {
-            			diagChoice = '\0';
-           				break;
-					}
+					dialog(npcNum);
+					break;
 				}	
 				else if (npcNum == 2) {
-           			char diagChoice;
-					cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl;
-       				cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
-        			cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl << endl <<"\nPress c to Continue, q to Quit:";
-        			cin >> diagChoice;
-       				if (diagChoice == 'q' || diagChoice == 'Q'){
-            			diagChoice = '\0';
-           				break;
-       				}	
-					system("clear");
-					map.setTile(x,y,Map::OPEN);
-					if (diagChoice != 'c' || diagChoice != 'C') {
-						cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl;
-       					cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
-        				cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl << endl <<"\nPress c to Continue:";
-        				cin >> diagChoice;
-					} else {
-            			diagChoice = '\0';
-           				break;
-					}
+					dialog(npcNum);
+					break;
 				}
 				else if (npcNum == 3) {
-           			char diagChoice;
-					cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl;
-       				cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
-        			cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl << endl <<"\nPress c to Continue, q to Quit:";
-        			cin >> diagChoice;
-       				if (diagChoice == 'q' || diagChoice == 'Q'){
-            			diagChoice = '\0';
-           				break;
-       				}	
-					system("clear");
-					map.setTile(x,y,Map::OPEN);
-					if (diagChoice != 'c' || diagChoice != 'C') {
-						cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl;
-       					cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
-        				cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl << endl <<"\nPress c to Continue:";
-        				cin >> diagChoice;
-					} else {
-            			diagChoice = '\0';
-           				break;
-					}
+					dialog(npcNum);
+					break;
 				}
 				else if (npcNum == 4) {
-           			char diagChoice;
-					cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl;
-       				cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
-        			cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl << endl <<"\nPress c to Continue, q to Quit:";
-        			cin >> diagChoice;
-       				if (diagChoice == 'q' || diagChoice == 'Q'){
-            			diagChoice = '\0';
-           				break;
-       				}	
-					system("clear");
-					map.setTile(x,y,Map::OPEN);
-					if (diagChoice != 'c' || diagChoice != 'C') {
-						cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl;
-       					cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
-        				cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl << endl <<"\nPress c to Continue:";
-        				cin >> diagChoice;
-					} else {
-            			diagChoice = '\0';
-           				break;
-					}
+					dialog(npcNum);
+					break;
 				}
 				else if (npcNum == 5) {
-           			char diagChoice;
-					cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl;
-       				cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
-        			cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl << endl <<"\nPress c to Continue, q to Quit:";
-        			cin >> diagChoice;
-       				if (diagChoice == 'q' || diagChoice == 'Q'){
-            			diagChoice = '\0';
-           				break;
-       				}	
-					system("clear");
-					map.setTile(x,y,Map::OPEN);
-					if (diagChoice != 'c' || diagChoice != 'C') {
-						cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl;
-       					cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
-        				cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl << endl <<"\nPress c to Continue:";
-        				cin >> diagChoice;
-					} else {
-            			diagChoice = '\0';
-           				break;
-					}
+					dialog(npcNum);
+					break;
 				}
 				else if (npcNum == 6) {
-           			char diagChoice;
-					cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl;
-       				cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
-        			cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl << endl <<"\nPress c to Continue, q to Quit:";
-        			cin >> diagChoice;
-       				if (diagChoice == 'q' || diagChoice == 'Q'){
-            			diagChoice = '\0';
-           				break;
-       				}	
-					system("clear");
-					map.setTile(x,y,Map::OPEN);
-					if (diagChoice != 'c' || diagChoice != 'C') {
-						cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl;
-       					cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
-        				cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl << endl <<"\nPress c to Continue:";
-        				cin >> diagChoice;
-					} else {
-            			diagChoice = '\0';
-           				break;
-					}
+					dialog(npcNum);
+					break;
 				}
 				else if (npcNum == 7) {
-           			char diagChoice;
-					cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl;
-       				cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
-        			cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl << endl <<"\nPress c to Continue, q to Quit:";
-        			cin >> diagChoice;
-       				if (diagChoice == 'q' || diagChoice == 'Q'){
-            			diagChoice = '\0';
-           				break;
-       				}	
-					system("clear");
-					map.setTile(x,y,Map::OPEN);
-					if (diagChoice != 'c' || diagChoice != 'C') {
-						cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl;
-       					cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
-        				cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl << endl <<"\nPress c to Continue:";
-        				cin >> diagChoice;
-					} else {
-            			diagChoice = '\0';
-           				break;
-					}
+					dialog(npcNum);
+					break;
 				}
 				else if (npcNum == 8) {
-           			char diagChoice;
-					cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl;
-       				cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
-        			cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl << endl <<"\nPress c to Continue, q to Quit:";
-        			cin >> diagChoice;
-       				if (diagChoice == 'q' || diagChoice == 'Q'){
-            			diagChoice = '\0';
-           				break;
-       				}	
-					system("clear");
-					map.setTile(x,y,Map::OPEN);
-					if (diagChoice != 'c' || diagChoice != 'C') {
-						cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl;
-       					cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
-        				cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl << endl <<"\nPress c to Continue:";
-        				cin >> diagChoice;
-					} else {
-            			diagChoice = '\0';
-           				break;
-					}
+					dialog(npcNum);
+					break;
 				}
 				else if (npcNum == 9) {
-           			char diagChoice;
-					cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl;
-       				cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
-        			cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl << endl <<"\nPress c to Continue, q to Quit:";
-        			cin >> diagChoice;
-       				if (diagChoice == 'q' || diagChoice == 'Q'){
-            			diagChoice = '\0';
-           				break;
-       				}	
-					system("clear");
-					map.setTile(x,y,Map::OPEN);
-					if (diagChoice != 'c' || diagChoice != 'C') {
-						cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl;
-       					cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
-        				cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl << endl <<"\nPress c to Continue:";
-        				cin >> diagChoice;
-					} else {
-            			diagChoice = '\0';
-           				break;
-					}
+					dialog(npcNum);
+					break;
 				}
 				else if (npcNum == 10) {
-           			char diagChoice;
-					cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl;
-       				cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
-        			cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl << endl <<"\nPress c to Continue, q to Quit:";
-        			cin >> diagChoice;
-       				if (diagChoice == 'q' || diagChoice == 'Q'){
-            			diagChoice = '\0';
-           				break;
-       				}	
-					system("clear");
-					map.setTile(x,y,Map::OPEN);
-					if (diagChoice != 'c' || diagChoice != 'C') {
-						cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl;
-       					cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
-        				cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl << endl <<"\nPress c to Continue:";
-        				cin >> diagChoice;
-					} else {
-            			diagChoice = '\0';
-           				break;
-					}
+					dialog(npcNum);
+					break;
 				}
-  	 		 }
+  	 		}
+		map.setTile(x,y,Map::OPEN);
 		x = old_x;
 		y = old_y;
 // redraws map after NPC function ends
 		drawOn(x,y,map,playerHP,playerGP,playerLvl,descriptor);
 		}
 //Stop flickering by only redrawing on a change
-		if (x != old_x or y != old_y or descriptor == Map::WATER or descriptor == Map::MONSTER) {
+		if (x != old_x or y != old_y or descriptor == Map::WATER or descriptor == Map::MONSTER or descriptor == Map::WALL) {
 			clear();
 			map.draw(x, y);
 			mvprintw(Map::DISPLAY + 1, 0, "X: %i Y: %i Health: %i Gold: %i Lvl: %i\n", x, y, playerHP, playerGP, playerLvl);
