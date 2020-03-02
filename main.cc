@@ -50,6 +50,7 @@ void description(char tileDescriptor){
 		mvprintw(Map::DISPLAY +2,0,"DESOLATE AND BARREN LAND STRETCHES ALL AROUND YOU");
 	}
 }
+
 //redraws ncurses map
 void drawOn(int x,int y,Map map,int playerHP,int playerGP,int playerLvl,char descriptor){
 	turn_on_ncurses();
@@ -59,6 +60,7 @@ void drawOn(int x,int y,Map map,int playerHP,int playerGP,int playerLvl,char des
 	description(descriptor);
 	refresh();
 }
+
 // booleans for tile scanning
 bool collide(int posX, int posY, Map collision){
 	char tile;
@@ -137,10 +139,56 @@ bool encounter() {
 		return true;
 }
 
+//magic 0 = no magic, 1 = Ring of Finger Guns, 2 = Amulet of Noxious Burp, 3 = Belt of Fire Flatulance, 4 = Shoe of Giant Size, 5 = Bob the Wizard's wand.
+void magicDescription (int magic) {
+	if (magic == 0) { 
+		cout << "Kyk has no Magicks!\n";
+	} else if (magic == 1) {
+		cout << "Kyk raises both hands pointing. Carefully cocking each thumb back before firing burst of pure Ego into the Monster!\n";
+	} else if (magic == 2) {
+		cout << "Kyk reaches under his armor and rubs his belly, a deep growling starts in the Goblins Belly before Kyk belches a green cloud of smoke into the Monster!\n";	
+	} else if (magic == 3) {
+		cout << "Kyk turns around, putting his head between his legs and takes aim, farting a blast of pure inferno into the Monster!\n";
+	} else if (magic == 4) {
+		cout << "Kyk screams\"MAKE MY MONSTER GROW!\" and quickly grows several stories tall and steps on the Monster before shrinking back to his normal size.\n";
+	} else if (magic == 5) {
+		cout << "Kyk holds the plain wooden wand in two hands and carefully aim at the monster. Suddenly a old man appears and charges at the Monster slapping it with a shoe!\n";
+	}
+}
 
+//swords, 1 = bareknuckles, 2 = Dull Rusty Blade, 3 = Steel Short Sword, 4 = Cursed blade 'Misery's Edge',5 = Susan
+void swordDescription (int sword) {
+    if (sword == 1) {
+        cout << "Kyk says \"These fist! These fists are like weapons!\" before scratching at the monsters face.\n";
+    } else if (sword == 2) {
+        cout << "Kyk raises the dull rust red blade high swinging wildly in all directions getting many slashes into the Monster's side!\n";
+    } else if (sword == 3) {
+        cout << "With Kyk's great skill at the sword, the steel short sword makes quick and accurate strikes into the Monster!\n";
+    } else if (sword == 4) {
+        cout << "The pure black blade cries tears down it's cursed edge, as Kyk slashes at the Monster the Blades magic reaches out causing great emotional damage.\n";
+    } else if (sword == 5) {
+        cout << "The goblins knuckles go white, gripping the sword. Susan the Ancient Soul Blade burst into magnificent glory! Shining out Golden Light, Susan guides Kyk's hand into the perfect strike!\n";
+    }
 
+}
+//armor, 1 = shirtless, 2 = leather shirt, 3 = Chain Mail Shirt, 4 = cloak of agility, 5 = Bracers of Shadow Kin  
+void armorDescription (int playerDP) {
+	    if (playerDP == 1) {
+			cout << "Kyk tries as hard as he can to not get scratched, maimed, or brutalized.\n";
+    } else if (playerDP == 2) {
+		cout << "The thick leathers protect Kyk's rotund pot belly\n";
+    } else if (playerDP == 3) {
+		cout << "The oversized chain mail shirt, confuses the monster because they've never seen a Goblin in a dress before.\n";
+    } else if (playerDP == 4) {
+		cout << "The runecast skywhale leather cloak pushes the small goblin out of harm's way.\n";
+    } else if (playerDP == 5) {
+		cout << "Shadows rise from the corners of everything in the area, slowly forming living shadows of the Goblin King. They intercede the Monster's attack saving Kyk from most of the damage.\n";
+    }
+}
+
+// might need to balance combat HP/damage numbers but the system is complete
 // Combat function
-bool combat(int playerLvl, int& playerHP, int playerDP, int sword, int& magic ) {
+bool combat(int playerLvl,int& playerLives, int& playerHP, int playerDP, int sword, int& magic ) {
 	srand(time(0));
 	int outcome = 0;
 	int playerAtk = 0;
@@ -152,81 +200,94 @@ bool combat(int playerLvl, int& playerHP, int playerDP, int sword, int& magic ) 
 	if (playerLvl == 3) mobHP = 130;
 	if (playerLvl == 4) mobHP = 190;
 	if (playerLvl == 5) mobHP = 220;
-	if (playerLvl > 5 && sword == 5 && magic == 5) mobHP = 400;
+	if (playerLvl > 5 && sword == 5) mobHP = 400;
 
 	if (encounter() == false) {
 		return false;
 	}
-	else {
-		system("clear");
-		while(true) {
+	system("clear");
+	while(true) {
 		char combatChoice;
 		cout << "Player Health:" << playerHP << endl;
-//comment out mob HP before deployment
+	//comment out mob HP before deployment
 		cout << "Mob HP:" << mobHP << endl; 
-  		cout << "\nPress A for attack  D for defend  R for rabid attack M for magic:";
+		cout << "\nPress A for attack  D for defend  R for rabid attack M for magic:";
 		cin >> combatChoice;
 		if (combatChoice == 'A'|| combatChoice == 'a') {
-			playerAtk =(rand() % 10 + playerLvl) + sword;
+			playerAtk =(rand() % 10 + playerLvl) * sword;
+			swordDescription (sword);
 			cout << "Kyk Dealt " << playerAtk << " Damage!\n";
 			mobHP = mobHP - playerAtk;
 			if (mobHP < 1) break;
 			mobAtk = (rand() % 10 + 1) - playerDP;
 			cout << "The monster dealt " <<  mobAtk << " Damage!\n";
 			playerHP -= mobAtk;
+			usleep(10000);
 		}
 		else if (combatChoice == 'D' || combatChoice == 'd') {
 			playerAtk = 0;
 			cout << "Defend! Kyk deals no damage!\n";
-           	mobHP -= playerAtk;
-      	 	mobAtk = (rand() % 10 + 1) - (playerDP * 2);
-      	 	cout << "The monster dealt " << mobAtk << " Damage!\n";
-           	playerHP = playerHP - mobAtk;
+			mobHP -= playerAtk;
+			mobAtk = (rand() % 10 + 1) - (playerDP * 4);
+			cout << "The monster dealt " << mobAtk << " Damage!\n";
+			playerHP = playerHP - mobAtk;
+			usleep(10000);
 		}
 		else if (combatChoice == 'R' || combatChoice == 'r'){
-			playerAtk =(rand() % 20) + playerLvl + sword;
+			playerAtk =(rand() % 20) * playerLvl;
+			cout << "Kyk starts twitching and squeeling. He drops his swords, hands shaking so bad. Suddenly he leaps, biting at the monsters face!\n";
 			cout << "Kyk Dealt " << playerAtk << " Damage!\n";
 			mobHP = mobHP - playerAtk;
-            if (mobHP < 1) break;
-            mobAtk = (rand() % 10 + 10) * 2;
-            cout << "The monster dealt " <<  mobAtk << " Damage!\n";
-            playerHP -= mobAtk;
+			if (mobHP < 1) break;
+			mobAtk = (rand() % 10 + 10) * 2;
+			cout << "The monster dealt " <<  mobAtk << " Damage!\n";
+			playerHP -= mobAtk;
+			usleep(10000);
 		}
 		else if (combatChoice == 'M' || combatChoice == 'm'){
 			playerAtk =(rand() % 30) * magic * sword;
-			if (rand() % 2 == 0) {
-			playerHP -= playerAtk / playerLvl;
+			if (rand() % 4 == 0) {
+				playerHP -= playerAtk / playerLvl;
+				magic--;
+				cout << "Magickal Backlash Scorches Kyk!";
 			}
-			if (playerAtk == 0) {
-				 cout << "Kyk has no Magic!";
+			magicDescription(magic);
+			cout << "Kyk dealt " << playerAtk << " Damage!\n";
+			mobHP = mobHP - playerAtk;
+			if (mobHP < 1) break;
+			mobAtk = (rand() % 10 + 1) - playerDP;
+			cout << "The monster dealt " <<  mobAtk << " Damage!\n";
+			playerHP -= mobAtk;
+			usleep(10000);	
+		}
+		if (playerHP < 1){
+			system("clear");
+			cout << "You have been slain by a foul monster!\n\n Sacrifice a fraction of your soul to to the shrunken warlock's head, PRESS L TO LIVE, or PRESS Q to QUIT!";
+			char temp = '\0';
+			cin >> temp;
+			if (temp == 'l' || temp == 'l'){
+				playerHP = 10;
+				break;
 			}
 			else {
-			mobHP = mobHP - playerAtk;
-            if (mobHP < 1) break;
-            mobAtk = (rand() % 10 + 1) - playerDP;
-            cout << "The monster dealt " <<  mobAtk << " Damage!\n";
-            playerHP -= mobAtk;
+				return 0;
 			}
 		}
-	if (playerHP < 1){
-		system("clear");
-		break;
-	}
 
-	else if (mobHP < 1)	{
-		system("clear");
-		break;
-	}
+		else if (mobHP < 1)	{
+			system("clear");
+			break;
 		}
-
+	
+	}
 	
 	if (playerHP < 1) {
 		return false;
 		}
+
 		else {
 			return true;
 		}
-	}
 }
 
 //print from file loop
@@ -237,27 +298,13 @@ void dialog (int npcNum) {
 		string temp2;
 		cout << setw(60) << setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl;
 		if (npcNum == 1) {
-			ifstream inFile("NPC1.txt");
+	/*		ifstream inFile("NPC1.txt");
 			while (getline(inFile,temp,'\n')){
 				temp += temp + " ";	
 				}
 			cout << temp;
-			}	
-
-
-
-
-
-			/*
-//			while (inFile) {
-//				inFile >> temp;
-//				if (!inFile) break;
-				cout << temp << " ";
-			cout << endl;
-		}
-
-		*/
-
+			*/
+			} 	
 		else if (npcNum == 2) {
 			ifstream inFile("NPC2.txt");
 		}
@@ -302,16 +349,20 @@ void dialog (int npcNum) {
 
 // inventory function
 //swords, 1 = bareknuckles, 2 = Dull Rusty Blade, 3 = Steel Short Sword, 4 = Cursed blade 'Misery's Edge',5 = Susan
-//armor, 1 = shirtless, 2 = leather shirt, 3 = iron chest peice,
-//magic 0 = no magic, 1 = Finger Guns, 2 = Noxious Burp, 3 = 
+//armor, 1 = shirtless, 2 = leather shirt, 3 = Chain Mail Shirt, 4 = cloak of agility, 5 = Bracers of Shadow Kin
+
+//magic 0 = no magic, 1 = Ring of Finger Guns, 2 = Amulet of Noxious Burp, 3 = Belt of Fire Flatulance, 4 = Shoe of Giant Size, 5 = Bob the Wizard's wand. 
+
+// Display number of Souls in the shrunken warlock's head.
 
 // main
 int main() {
 //	game variables
 	string playerName = "";
 	char descriptor = '\0';
-	int playerLvl = 0;
-	int playerHP = 20 + (playerLvl * 2);
+	int playerLvl = 1;
+	int playerLives = 5;// this is soul fragments.
+	int playerHP = 20 + (playerLvl * 10);
 	int playerDP = 1;
 // player defense points starts at 0. player buys better armor and this goes up 
 	int playerSword = 1;
@@ -364,12 +415,12 @@ int main() {
 			map.setTile(x,y,Map::OPEN);
 			// line is 55 underscores
 			cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl;
-			cout << "\n\n          WELCOME TO THE GRAND ADVENTURES\n                        OF\n               KYK THE GOBLIN KING\n\n\n\n        Please enter player name to start\n";
+			cout << "\n\n\t\tWELCOME TO THE GRAND ADVENTURES\n                        OF\t              KYK THE GOBLIN KING\n\n\n\n\t        Please enter player name to start\n";
 			cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl << "Name:";
 			cin >> playerName;
 			system("clear");
 			cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl;
-			cout << "\n  LONG LONG AGO IN THE DISTANT LAND OF LEVIATHAN IN\n  THE WILD AND CHAOTIC NORTH THERE WAS A SMALL GOBLIN\n  NAMED KYK. SMALL EVEN AMOUNGST OTHER GOBLINS KYK WAS\n  ONCE RIDICULED BY EVERYONE, BUT NO LONGER BECAUSE\n  KYK THROUGH SURE TENACITY AND A STRONG BITE BECAME\n  THE KING OF ALL GOBLIN KIND. HIS SMALLER THAN\n  AVERAGE HEAD MADE THE BURDEN OF WEARING ALL FIVE\n  CROWNS OF THE ONCE SEPERATE GOBLIN NATIONS IMPOSSIBLE,\n  SO UPON HIS CORINATION KYK HAD ALL FIVE CROWNS\n  FORGED INTO A GOLDEN CHAIN HE WORE AROUND HIS NECK.\n\n  AFTER SEVERAL WEEKS KYK GREW TIRED OF HIS KINGLY\n  DUTIES AND WANDERED OFF TO FIND SOME ADVENTURE.\n  AND ADVENTURE HE DID FIND! SLAYING DRAGONS, ELVES,\n  DWARFS, HOOMANS, EVEN A GIANT! NO BEAST OR FOE\n  COULD STAND BEFORE THE WHIRLING BLADES OF THE KING\n  OF ALL GOBLINS. BUT THEN ONE NIGHT AT A TAVERN\n  KYK LOST EVERYTHING HE OWNED IN A GAME OF CARDS\n  TO A SHREWED AND CALCULATING KAJIIT.\n\n\n NOW WE JOIN OUR GOBLIN KING THE MORNING AFTER.\n  IT'S YOUR JOB AS THE PLAYER TO COLLECT MONEY TO BUY BACK\n  HIS POSSESSIONS FROM THE DEVIOUS KAJIIT,\n  AND FIND THE FIVE GOLBIN CROWNS HE HID IN THE\n  WILDERNESS OF THE NORTH!\n\n";
+			cout << "\n  LONG LONG AGO IN THE DISTANT LAND OF LEVIATHAN IN\n  THE WILD AND CHAOTIC NORTH THERE WAS A SMALL GOBLIN\n  NAMED KYK. SMALL EVEN AMOUNGST OTHER GOBLINS KYK WAS\n  ONCE RIDICULED BY EVERYONE, BUT NO LONGER BECAUSE\n  KYK THROUGH SURE TENACITY AND A STRONG BITE BECAME\n  THE KING OF ALL GOBLIN KIND. HIS SMALLER THAN\n  AVERAGE HEAD MADE THE BURDEN OF WEARING ALL FIVE\n  CROWNS OF THE ONCE SEPERATE GOBLIN NATIONS IMPOSSIBLE,\n  SO UPON HIS CORINATION KYK HAD ALL FIVE CROWNS\n  FORGED INTO A GOLDEN CHAIN HE WORE AROUND HIS NECK.\n\n  AFTER SEVERAL WEEKS KYK GREW TIRED OF HIS KINGLY\n  DUTIES AND WANDERED OFF TO FIND SOME ADVENTURE.\n  AND ADVENTURE HE DID FIND! SLAYING DRAGONS, ELVES,\n  DWARFS, HOOMANS, EVEN A GIANT! NO BEAST OR FOE\n  COULD STAND BEFORE THE WHIRLING BLADES OF THE KING\n  OF ALL GOBLINS. BUT THEN ONE NIGHT AT A TAVERN\n  KYK LOST EVERYTHING HE OWNED IN A GAME OF CARDS\n  TO A SHREWED AND CALCULATING KAJIIT.\n\n\n  NOW WE JOIN OUR GOBLIN KING THE MORNING AFTER.\n  IT'S YOUR JOB AS THE PLAYER TO COLLECT MONEY TO BUY BACK\n  HIS POSSESSIONS FROM THE DEVIOUS KAJIIT,\n  AND FIND THE FIVE GOLBIN CROWNS HE HID IN THE\n  WILDERNESS OF THE NORTH!\n\n";
 			cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl;
 			cout << "\n       Press C to continue...\n:";
 			char startGame;
@@ -396,22 +447,27 @@ int main() {
 		else if(isWater(x,y,map) == true) {
 			descriptor = Map::WATER;
 			playerHP--;
+//			drowned++;
 			x = old_x;
 			y = old_y;
+//			if (drowned = 5) {
+//				playerGP -= 5;
+//	 		    mvprintw(Map::DISPLAY +2,0,"Stop drowning you dummy! I'm gonna take this! Stay out of my water!"}		
+//			}
 		}
 //Monster interaction starts combatloop then sets tile to treasure and pushes player back to old pos
 		else if (isMonster(x,y,map) == true) {
 			//combat function loop
 			turn_off_ncurses();
 //combat function
-			if (combat(playerLvl,playerHP, playerDP, playerSword,magic) == true){
+			if (combat(playerLvl, playerLives, playerHP, playerDP, playerSword, magic) == true){
 				mobKills++;
 				map.setTile(x,y,Map::TREASURE);
 			}
 			else {
 				map.setTile(x,y,Map::OPEN);
 			}
-			if (mobKills == 3) {
+			if (mobKills == 6) {
 				playerLvl++;
 				mobKills = 0;
 			}
@@ -488,8 +544,8 @@ int main() {
             turn_off_ncurses();
             system("clear");
 			cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl;
-            cout << "\n\n\n  " << playerName << "YOU WIN!!\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
-            cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl << endl <<"\nPress q to Quit:";
+			cout << "\n\n\n  " << playerName << " Won!\n" << "CRY ALOUD BOLD AND PROUD OF WHERE I'VE BEEN\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
+            cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl << endl <<"\nPress e to END:";
 			cin >> quitButton;
            	break;
 		}
@@ -500,8 +556,8 @@ int main() {
 			turn_off_ncurses();
 			system("clear");
 			cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl;
-            cout << "\n\n\n  " << playerName << "YOU DIED!!\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
-            cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl << endl <<"\nPress q to Quit:";
+			cout << "\n\n\n  " << playerName << " Died!\n" <<"ONCE INVINCILBLE NOW THE ARMOR'S WEARING THIN HEAVY SHIELD DOWN\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
+            cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl << endl <<"\nPress e to END:";
 			cin >> quitButton;
 			break;
 		}
