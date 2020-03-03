@@ -112,6 +112,16 @@ bool isNpc(int posX, int posY, Map people){
     }
 }
 
+bool isKajiit(int posX, int posY, Map shop){
+    char tile;
+    tile = shop.getTile(posX,posY);
+    if (tile == Map::KAJIIT){
+        return true;
+    } else {
+        return false;
+    }
+}
+
 bool isHero(int posX, int posY, Map hero){
 	char tile;
 	tile = hero.getTile(posX,posY);
@@ -124,12 +134,43 @@ bool isHero(int posX, int posY, Map hero){
 
 
 // this function just displays the monster inside of the combat function
-bool encounter() {
+bool encounter(int playerLvl) {
        	char combatChoice = '\0';
-		cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl;
-        cout << "\n\n\n\n\n\n\n     ARRRG A SCARY MONSTER!!!\n\n\n\n\n\n\n\n\n\n\n\n";
-        cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl << endl <<"\nPress c to continue, r to runaway:";
-        cin >> combatChoice;
+		system("clear");
+        string mobScreen;
+		if (playerLvl == 1) {
+			ifstream inFile("output/mob1.txt");
+			while (getline(inFile,mobScreen,'\n')){ 
+			cout << mobScreen << endl;
+			}
+		} else if (playerLvl == 2) {
+			ifstream inFile("output/mob2.txt");
+			while (getline(inFile,mobScreen,'\n')){
+				cout << mobScreen << endl;
+			}
+				
+		} else if (playerLvl == 3) {
+            ifstream inFile("output/mob3.txt");
+			while (getline(inFile,mobScreen,'\n')){ 
+				cout << mobScreen << endl;
+			}
+		} else if (playerLvl == 4) {
+            ifstream inFile("output/mob4.txt");
+			while (getline(inFile,mobScreen,'\n')){ 
+				cout << mobScreen << endl;
+			}
+		} else if (playerLvl == 5) {
+            ifstream inFile("output/mob5.txt");
+			while (getline(inFile,mobScreen,'\n')){ 
+				cout << mobScreen << endl;
+			}
+		} else if (playerLvl > 5) {
+           	ifstream inFile("output/mob6.txt");
+			while (getline(inFile,mobScreen,'\n')){ 
+				cout << mobScreen << endl;
+			}
+		}
+		cin >> combatChoice;
         if (combatChoice == 'r' || combatChoice == 'R'){
             return false;
         }
@@ -194,15 +235,34 @@ bool combat(int playerLvl,int& playerLives, int& playerHP, int playerDP, int swo
 	int playerAtk = 0;
 	int mobAtk = 0;
 	int mobHP = 0;
+	string mobDescription;
 
-	if (playerLvl == 1) mobHP = 30;
-	if (playerLvl == 2) mobHP = 50;
-	if (playerLvl == 3) mobHP = 130;
-	if (playerLvl == 4) mobHP = 190;
-	if (playerLvl == 5) mobHP = 220;
-	if (playerLvl > 5 && sword == 5) mobHP = 400;
+	if (playerLvl == 1){
+		mobDescription = "test 2\n";
+		mobHP = 30;
+	}
 
-	if (encounter() == false) {
+	if (playerLvl == 2) {
+		mobDescription = "test 2\n";
+			mobHP = 50;
+	}
+	if (playerLvl == 3) {
+		mobDescription = "test 2\n";
+		mobHP = 130;
+	}
+	if (playerLvl == 4) { 
+		mobDescription = "test 2\n";
+		mobHP = 190;
+	}
+	if (playerLvl == 5) {
+		mobDescription = "test 2\n";
+		mobHP = 220;
+	}
+	if (playerLvl > 5 && sword == 5) {
+		mobDescription = "test 2\n";
+		mobHP = 400;
+	}
+	if (encounter(playerLvl) == false) {
 		return false;
 	}
 	system("clear");
@@ -213,37 +273,23 @@ bool combat(int playerLvl,int& playerLives, int& playerHP, int playerDP, int swo
 		cout << "Mob HP:" << mobHP << endl; 
 		cout << "\nPress A for attack  D for defend  R for rabid attack M for magic:";
 		cin >> combatChoice;
+		//player inputs
 		if (combatChoice == 'A'|| combatChoice == 'a') {
+			combatChoice = '\0';
 			playerAtk =(rand() % 10 + playerLvl) * sword;
 			swordDescription (sword);
-			cout << "Kyk Dealt " << playerAtk << " Damage!\n";
-			mobHP = mobHP - playerAtk;
-			if (mobHP < 1) break;
-			mobAtk = (rand() % 10 + 1) - playerDP;
-			cout << "The monster dealt " <<  mobAtk << " Damage!\n";
-			playerHP -= mobAtk;
-			usleep(10000);
 		}
 		else if (combatChoice == 'D' || combatChoice == 'd') {
 			playerAtk = 0;
 			cout << "Defend! Kyk deals no damage!\n";
-			mobHP -= playerAtk;
-			mobAtk = (rand() % 10 + 1) - (playerDP * 4);
-			cout << "The monster dealt " << mobAtk << " Damage!\n";
-			playerHP = playerHP - mobAtk;
-			usleep(10000);
+			armorDescription (playerDP);
 		}
+
 		else if (combatChoice == 'R' || combatChoice == 'r'){
 			playerAtk =(rand() % 20) * playerLvl;
 			cout << "Kyk starts twitching and squeeling. He drops his swords, hands shaking so bad. Suddenly he leaps, biting at the monsters face!\n";
-			cout << "Kyk Dealt " << playerAtk << " Damage!\n";
-			mobHP = mobHP - playerAtk;
-			if (mobHP < 1) break;
-			mobAtk = (rand() % 10 + 10) * 2;
-			cout << "The monster dealt " <<  mobAtk << " Damage!\n";
-			playerHP -= mobAtk;
-			usleep(10000);
 		}
+
 		else if (combatChoice == 'M' || combatChoice == 'm'){
 			playerAtk =(rand() % 30) * magic * sword;
 			if (rand() % 4 == 0) {
@@ -252,29 +298,50 @@ bool combat(int playerLvl,int& playerLives, int& playerHP, int playerDP, int swo
 				cout << "Magickal Backlash Scorches Kyk!";
 			}
 			magicDescription(magic);
-			cout << "Kyk dealt " << playerAtk << " Damage!\n";
-			mobHP = mobHP - playerAtk;
-			if (mobHP < 1) break;
-			mobAtk = (rand() % 10 + 1) - playerDP;
-			cout << "The monster dealt " <<  mobAtk << " Damage!\n";
-			playerHP -= mobAtk;
-			usleep(10000);	
 		}
+		//player damage resolution and mob turn
+		if (playerAtk < 1) playerAtk = 0;
+		cout << "Kyk Dealt " << playerAtk << " Damage!\n";
+		mobHP -= playerAtk;
+		if (mobHP < 1) break;
+		if (combatChoice == 'A' || combatChoice == 'a') mobAtk = (rand() % 10 +	1) * playerLvl;
+		else if (combatChoice == 'R' || combatChoice == 'r') mobAtk = (rand() % 30 + 1) * playerLvl;
+		else if (combatChoice == 'D' || combatChoice == 'd') mobAtk = ((rand() % 8 + 1) * playerLvl) - playerDP;
+		else if (combatChoice == 'M' || combatChoice == 'm') mobAtk = (rand() % 10 + 1) * playerLvl;
+		if (mobAtk < 1) mobAtk = 0;
+		cout << mobDescription;
+		cout << "The monster dealt " <<  mobAtk << " Damage!\n";
+		playerHP -= mobAtk;
+		cout << "PRESS C TO CONTINUE OR R TO RUNAWAY\n SACRIFICING HALF OF YOUR HEALTH:\n";
+		cin >> combatChoice;
+		if (combatChoice == 'R' || combatChoice == 'r'){
+			playerHP /= 2;
+			return false;
+		}
+		else if (combatChoice != 'R' || combatChoice != 'r') {
+			system("clear");
+		}
+			
 		if (playerHP < 1){
 			system("clear");
+			usleep(10000);
 			cout << "You have been slain by a foul monster!\n\n Sacrifice a fraction of your soul to to the shrunken warlock's head, PRESS L TO LIVE, or PRESS Q to QUIT!";
+			cout << "You only have " << playerLives << " Soul Fragments left.";
 			char temp = '\0';
 			cin >> temp;
-			if (temp == 'l' || temp == 'l'){
-				playerHP = 10;
+			if (temp != 'q' || temp != 'Q'){
+				playerHP = 10 * playerLives;
+				playerLives--;
 				break;
 			}
 			else {
 				return 0;
 			}
-		}
 
-		else if (mobHP < 1)	{
+		}
+	
+
+		if (mobHP < 1)	{
 			system("clear");
 			break;
 		}
@@ -295,16 +362,13 @@ void dialog (int npcNum) {
 	while (true) {
 		char diagChoice;
 		string temp;
-		string temp2;
-		cout << setw(60) << setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl;
 		if (npcNum == 1) {
-	/*		ifstream inFile("NPC1.txt");
+			ifstream inFile("output/NPC1a.txt");
 			while (getline(inFile,temp,'\n')){
-				temp += temp + " ";	
-				}
-			cout << temp;
-			*/
-			} 	
+				cout << temp << endl;
+			}
+//			ticTacToe();
+		}
 		else if (npcNum == 2) {
 			ifstream inFile("NPC2.txt");
 		}
@@ -332,8 +396,6 @@ void dialog (int npcNum) {
 		else if (npcNum == 10) {
 			ifstream inFile("NPC10.txt");
 		}
-		cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl;
-		cout << endl << "Press q to quit\n";
 		cin >> diagChoice;
     	if (diagChoice == 'q' || diagChoice == 'Q'){
    			diagChoice = '\0';
@@ -345,6 +407,40 @@ void dialog (int npcNum) {
 
 //shopkeeper function
 //Kajiit has wares if you have coin
+void shopkeeping(int& playerLives, int& playerHP,int& playerGP,int& playerDP,int& playerSword, int& magic) {
+	string temp;
+	int selector;
+	ifstream inFile("output/shop1.txt");
+		while (getline(inFile,temp,'\n')) {
+			cout << temp << endl;
+		}
+	while (true) {
+//		cout << "make a selection 1) Lives 2)HP 3)DP 4)sword 5)magic 6)GP\n";
+		cin >> selector;
+		if (selector == 1) {
+			playerLives++;
+			continue;
+		} else if (selector == 2) {
+			playerHP++;
+		} else if (selector == 3) {
+			playerDP++;
+		} else if (selector == 4) {
+			playerSword++;
+		} else if (selector == 5) {
+			magic++;
+		} else if (selector == 6) {
+			playerGP++;
+		} else if (selector == 7) {
+			break;
+		}
+		system("clear");
+		while (getline(inFile,temp,'\n')) {
+			cout << temp << endl;
+		}
+	}
+}
+
+
 //ASCII CAT
 
 // inventory function
@@ -358,7 +454,6 @@ void dialog (int npcNum) {
 // main
 int main() {
 //	game variables
-	string playerName = "";
 	char descriptor = '\0';
 	int playerLvl = 1;
 	int playerLives = 5;// this is soul fragments.
@@ -380,12 +475,6 @@ int main() {
 	while (true) {
 		int ch = getch(); // Wait for user input, with TIMEOUT delay
 		if (ch == 'q' || ch == 'Q') break;//menu button etc need to be right here
-//shopkeeper
-		else if (ch == 's' || ch == 'S') {
-//			turn_off_ncurses();
-			//shopkeeper function
-//			drawOn(x,y,map,playerHP,playerGP,descriptor);
-		}
 //inventory
 		else if (ch == 'i' || ch == 'I') {
 //			turn_off_ncurses();
@@ -413,17 +502,19 @@ int main() {
 			turn_off_ncurses();
 // this changes the map tile so that the player can't reaccess the title page
 			map.setTile(x,y,Map::OPEN);
-			// line is 55 underscores
-			cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl;
-			cout << "\n\n\t\tWELCOME TO THE GRAND ADVENTURES\n                        OF\t              KYK THE GOBLIN KING\n\n\n\n\t        Please enter player name to start\n";
-			cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl << "Name:";
-			cin >> playerName;
-			system("clear");
-			cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl;
-			cout << "\n  LONG LONG AGO IN THE DISTANT LAND OF LEVIATHAN IN\n  THE WILD AND CHAOTIC NORTH THERE WAS A SMALL GOBLIN\n  NAMED KYK. SMALL EVEN AMOUNGST OTHER GOBLINS KYK WAS\n  ONCE RIDICULED BY EVERYONE, BUT NO LONGER BECAUSE\n  KYK THROUGH SURE TENACITY AND A STRONG BITE BECAME\n  THE KING OF ALL GOBLIN KIND. HIS SMALLER THAN\n  AVERAGE HEAD MADE THE BURDEN OF WEARING ALL FIVE\n  CROWNS OF THE ONCE SEPERATE GOBLIN NATIONS IMPOSSIBLE,\n  SO UPON HIS CORINATION KYK HAD ALL FIVE CROWNS\n  FORGED INTO A GOLDEN CHAIN HE WORE AROUND HIS NECK.\n\n  AFTER SEVERAL WEEKS KYK GREW TIRED OF HIS KINGLY\n  DUTIES AND WANDERED OFF TO FIND SOME ADVENTURE.\n  AND ADVENTURE HE DID FIND! SLAYING DRAGONS, ELVES,\n  DWARFS, HOOMANS, EVEN A GIANT! NO BEAST OR FOE\n  COULD STAND BEFORE THE WHIRLING BLADES OF THE KING\n  OF ALL GOBLINS. BUT THEN ONE NIGHT AT A TAVERN\n  KYK LOST EVERYTHING HE OWNED IN A GAME OF CARDS\n  TO A SHREWED AND CALCULATING KAJIIT.\n\n\n  NOW WE JOIN OUR GOBLIN KING THE MORNING AFTER.\n  IT'S YOUR JOB AS THE PLAYER TO COLLECT MONEY TO BUY BACK\n  HIS POSSESSIONS FROM THE DEVIOUS KAJIIT,\n  AND FIND THE FIVE GOLBIN CROWNS HE HID IN THE\n  WILDERNESS OF THE NORTH!\n\n";
-			cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl;
-			cout << "\n       Press C to continue...\n:";
+			string titleScreen;
+			ifstream inFileTS("output/titlescreen1.txt");
+            while (getline(inFileTS,titleScreen,'\n')){
+				cout << titleScreen << endl;
+            }
 			char startGame;
+			cin >> startGame;
+			system("clear");
+			ifstream inFileTS2("output/titlescreen2.txt");
+			while (getline(inFileTS2,titleScreen,'\n')){
+				cout << titleScreen << endl;
+			}
+			cout << "\n       Press C to continue...\n:";
 			cin >> startGame;
 			if (startGame != 'c' || startGame != 'c') {
 				system("clear");
@@ -437,6 +528,16 @@ int main() {
 			y = old_y;
 			descriptor = Map::WALL;
 		}
+//shopkeeper
+		else if (isKajiit(x,y,map) == true) {
+			turn_off_ncurses();
+			//shopkeeper function
+			shopkeeping(playerLives, playerHP, playerGP, playerDP, playerSword, magic);
+			map.setTile(x,y,Map::OPEN);
+			x = old_x;
+			y = old_y;
+			drawOn(x,y,map, playerHP, playerGP, playerLvl, descriptor);
+		}
 //treasure player will gain 1 gold after moving over the tile
 		else if(isTreasure(x,y,map) == true) {
 			playerGP++;
@@ -447,13 +548,8 @@ int main() {
 		else if(isWater(x,y,map) == true) {
 			descriptor = Map::WATER;
 			playerHP--;
-//			drowned++;
 			x = old_x;
 			y = old_y;
-//			if (drowned = 5) {
-//				playerGP -= 5;
-//	 		    mvprintw(Map::DISPLAY +2,0,"Stop drowning you dummy! I'm gonna take this! Stay out of my water!"}		
-//			}
 		}
 //Monster interaction starts combatloop then sets tile to treasure and pushes player back to old pos
 		else if (isMonster(x,y,map) == true) {
@@ -541,11 +637,13 @@ int main() {
 //need to add a win check and win screen
 		if (playerCrown == 5) {
 			char quitButton = '\0';
+			string wonScreen;
             turn_off_ncurses();
             system("clear");
-			cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl;
-			cout << "\n\n\n  " << playerName << " Won!\n" << "CRY ALOUD BOLD AND PROUD OF WHERE I'VE BEEN\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
-            cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl << endl <<"\nPress e to END:";
+			ifstream inFile("output/gamewon.txt");
+			while (getline(inFile,wonScreen,'\n')){
+				cout << wonScreen << endl;
+			}
 			cin >> quitButton;
            	break;
 		}
@@ -553,11 +651,13 @@ int main() {
 //Game over check and game over screen
 		if (playerHP < 1) {
 			char quitButton = '\0';
-			turn_off_ncurses();
-			system("clear");
-			cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl;
-			cout << "\n\n\n  " << playerName << " Died!\n" <<"ONCE INVINCILBLE NOW THE ARMOR'S WEARING THIN HEAVY SHIELD DOWN\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
-            cout << setw(60) <<  setfill('_') << "_" << endl << setw(60) << setfill('_') << "_" << endl << endl <<"\nPress e to END:";
+			string lostScreen;
+            turn_off_ncurses();
+            system("clear");
+			ifstream inFile("output/gamelost.txt");
+			while (getline(inFile,lostScreen,'\n')){
+				cout << lostScreen << endl;
+			}
 			cin >> quitButton;
 			break;
 		}
