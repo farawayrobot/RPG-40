@@ -238,28 +238,28 @@ bool combat(int playerLvl,int& playerLives, int& playerHP, int playerDP, int swo
 	string mobDescription;
 
 	if (playerLvl == 1){
-		mobDescription = "test 2\n";
+		mobDescription = "The monster charges KYK tackling the small goblin!\n";
 		mobHP = 30;
 	}
 
 	if (playerLvl == 2) {
-		mobDescription = "test 2\n";
+		mobDescription = "The monster lashes out with it's sharp claws!\n";
 			mobHP = 50;
 	}
 	if (playerLvl == 3) {
-		mobDescription = "test 2\n";
+		mobDescription = "The monster unleasing it's true power!\n";
 		mobHP = 130;
 	}
 	if (playerLvl == 4) { 
-		mobDescription = "test 2\n";
+		mobDescription = "The monster bites The Goblin King with it's oversized maw!\n";
 		mobHP = 190;
 	}
 	if (playerLvl == 5) {
-		mobDescription = "test 2\n";
+		mobDescription = "The monster lashes out with spectral energies!\n";
 		mobHP = 220;
 	}
 	if (playerLvl > 5 && sword == 5) {
-		mobDescription = "test 2\n";
+		mobDescription = "The monster strikes out with magical weapons!\n";
 		mobHP = 400;
 	}
 	if (encounter(playerLvl) == false) {
@@ -277,21 +277,25 @@ bool combat(int playerLvl,int& playerLives, int& playerHP, int playerDP, int swo
 		if (combatChoice == 'A'|| combatChoice == 'a') {
 			combatChoice = '\0';
 			playerAtk =(rand() % 10 + playerLvl) * sword;
+			mobAtk = (rand() % (10 + 4))  * playerLvl;
 			swordDescription (sword);
 		}
 		else if (combatChoice == 'D' || combatChoice == 'd') {
 			playerAtk = 0;
 			cout << "Defend! Kyk deals no damage!\n";
+			mobAtk = ((rand() % 8 + 1) * playerLvl) - playerDP;
 			armorDescription (playerDP);
 		}
 
 		else if (combatChoice == 'R' || combatChoice == 'r'){
 			playerAtk =(rand() % 20) * playerLvl;
+			mobAtk = (rand() % 30 + 1) * playerLvl;
 			cout << "Kyk starts twitching and squeeling. He drops his swords, hands shaking so bad. Suddenly he leaps, biting at the monsters face!\n";
 		}
 
 		else if (combatChoice == 'M' || combatChoice == 'm'){
 			playerAtk =(rand() % 30) * magic * sword;
+			mobAtk = (rand() % 10 + 1) * playerLvl;
 			if (rand() % 4 == 0) {
 				playerHP -= playerAtk / playerLvl;
 				magic--;
@@ -300,25 +304,22 @@ bool combat(int playerLvl,int& playerLives, int& playerHP, int playerDP, int swo
 			magicDescription(magic);
 		}
 		//player damage resolution and mob turn
-		if (playerAtk < 1) playerAtk = 0;
+//		if (playerAtk < 1) playerAtk = 0;
 		cout << "Kyk Dealt " << playerAtk << " Damage!\n";
 		mobHP -= playerAtk;
 		if (mobHP < 1) break;
-		if (combatChoice == 'A' || combatChoice == 'a') mobAtk = (rand() % 10 +	1) * playerLvl;
-		else if (combatChoice == 'R' || combatChoice == 'r') mobAtk = (rand() % 30 + 1) * playerLvl;
-		else if (combatChoice == 'D' || combatChoice == 'd') mobAtk = ((rand() % 8 + 1) * playerLvl) - playerDP;
-		else if (combatChoice == 'M' || combatChoice == 'm') mobAtk = (rand() % 10 + 1) * playerLvl;
-		if (mobAtk < 1) mobAtk = 0;
+//		if (mobAtk < 1) mobAtk = 0;
 		cout << mobDescription;
 		cout << "The monster dealt " <<  mobAtk << " Damage!\n";
 		playerHP -= mobAtk;
-		cout << "PRESS C TO CONTINUE OR R TO RUNAWAY\n SACRIFICING HALF OF YOUR HEALTH:\n";
-		cin >> combatChoice;
-		if (combatChoice == 'R' || combatChoice == 'r'){
+		cout << "PRESS C TO CONTINUE OR R TO RUNAWAY\nSACRIFICING HALF OF YOUR HEALTH:\n";
+		char combatChoice2;
+		cin >> combatChoice2;
+		if (combatChoice2 == 'R' || combatChoice2 == 'r'){
 			playerHP /= 2;
 			return false;
 		}
-		else if (combatChoice != 'R' || combatChoice != 'r') {
+		else if (combatChoice2 != 'R' || combatChoice2 != 'r') {
 			system("clear");
 		}
 			
@@ -358,7 +359,7 @@ bool combat(int playerLvl,int& playerLives, int& playerHP, int playerDP, int swo
 }
 
 //print from file loop
-void dialog (int npcNum) {
+void dialog (int& npcNum, int& playerCrown,int& solved) {
 	while (true) {
 		char diagChoice;
 		string temp;
@@ -367,34 +368,202 @@ void dialog (int npcNum) {
 			while (getline(inFile,temp,'\n')){
 				cout << temp << endl;
 			}
-//			ticTacToe();
+			cin >> diagChoice;
+			if (diagChoice == 'q' || diagChoice == 'Q') break;
+			system("clear");
+			ifstream inFile2("output/NPC1b.txt");
+			while (getline(inFile2,temp,'\n')) {
+				cout << temp << endl;
+			}
+			string password;
+			string guess;
+			if ((rand() % 3) == 0) {
+				password = "rock";
+			}
+			if ((rand() % 3) == 1) {
+				password = "paper";
+			}
+			if ((rand() % 3) == 2) {
+				password = "scissors";
+			}
+			cout << "ENTER PASSWORD:";
+			cin >> guess;
+			if (guess == password) {
+				system("clear");
+				ifstream inFile3("output/NPC1c.txt");
+				while (getline(inFile3,temp,'\n')) {
+					cout << temp << endl;
+				}
+				playerCrown++;
+				solved = 1;
+			}
+			else {
+				system("clear");
+				ifstream inFile4("output/NPC1d.txt");
+				while (getline(inFile4,temp,'\n')) {
+					cout << temp << endl;
+				}
+				solved = 0;
+			}
+			cin >> diagChoice;
+			break;
+
 		}
 		else if (npcNum == 2) {
-			ifstream inFile("NPC2.txt");
+			int playerGuess = 0;
+			int NPCGuess = 0;
+			int win = 0;
+			ifstream inFile4("output/NPC2a.txt");
+			while (getline(inFile4,temp,'\n')) {
+				cout << temp << endl;
+			}
+			cin >> diagChoice;
+			system("clear");
+			ifstream inFile5("output/NPC2b.txt");
+			while (getline(inFile5,temp,'\n')) {
+				cout << temp << endl;
+			}
+			cin >> playerGuess;
+			NPCGuess = (rand() % 10) + 1;
+			if (!cin||playerGuess > 10) {
+				cout << "That's against the rules!\n";
+			}
+			int playerDistance = abs(win - playerGuess);
+			int NPCDistance = abs(win - NPCGuess);
+			if (playerDistance < NPCDistance) {
+				system("clear");
+				ifstream inFile6("output/NPC2c.txt");
+				while (getline(inFile6,temp,'\n')) {
+					cout << temp << endl;
+		   		}	
+				playerCrown++;
+				solved = 1;
+				cin >> diagChoice;
+				break;
+			} else {
+				system("clear");
+				ifstream inFile7("output/NPC2d.txt");
+				while (getline(inFile7,temp,'\n')) {
+					cout << temp << endl;
+				}
+				solved = 0;
+				cin >> diagChoice;
+				break;	
+			}
 		}
 		else if (npcNum == 3) {
-			ifstream inFile("NPC3.txt");
+			string playerGuess;
+			string answer = "silence";
+			ifstream inFile8("output/NPC3a.txt");
+			while (getline(inFile8,temp,'\n')) {
+				cout << temp << endl;
+			}
+			cin >> diagChoice;
+			system("clear");
+			ifstream inFile9("output/NPC3b.txt");
+			while (getline(inFile9,temp,'\n')) {
+				cout << temp << endl;
+			}
+			cout << "ENTER GUESS:";
+			cin >> playerGuess;
+	
+			if (playerGuess == answer) {
+				system("clear");
+				ifstream inFile10("output/NPC3c.txt");
+				while (getline(inFile10,temp,'\n')) {
+					cout << temp << endl;
+		   		}	
+				playerCrown++;
+				solved = 1;
+				cin >> diagChoice;
+				break;
+			} else {
+				system("clear");
+				ifstream inFile11("outcome/NPC3d.txt");
+				while (getline(inFile11,temp,'\n')) {
+					cout << temp << endl;
+				}
+				solved = 0;
+				cin >> diagChoice;
+				break;	
+			}
 		}
 		else if (npcNum == 4) {
-			ifstream inFile("NPC4.txt");
+			string playerGuess;
+			string answer = "clock";
+			ifstream inFile12("output/NPC4a.txt");
+			while (getline(inFile12,temp,'\n')) {
+				cout << temp << endl;
+			}
+			cin >> diagChoice;
+			system("clear");
+			ifstream inFile13("output/NPC4b.txt");
+			while (getline(inFile13,temp,'\n')) {
+				cout << temp << endl;
+			}
+			cout << "ENTER GUESS:";
+			cin >> playerGuess;
+	
+			if (playerGuess == answer) {
+				system("clear");
+				ifstream inFile14("output/NPC4c.txt");
+				while (getline(inFile14,temp,'\n')) {
+					cout << temp << endl;
+		   		}	
+				playerCrown++;
+				solved = 1;
+				cin >> diagChoice;
+				break;
+			} else {
+				system("clear");
+				ifstream inFile11("outcome/NPC3d.txt");
+				while (getline(inFile11,temp,'\n')) {
+					cout << temp << endl;
+				}
+				solved = 0;
+				cin >> diagChoice;
+				break;	
+			}
 		}
 		else if (npcNum == 5) {
-			ifstream inFile("NPC5.txt");
+			string playerGuess;
+			string answer = "bob";
+			ifstream inFile16("output/NPC5a.txt");
+			while (getline(inFile16,temp,'\n')) {
+				cout << temp << endl;
+			}
+			cin >> diagChoice;
+			system("clear");
+			ifstream inFile17("output/NPC5b.txt");
+			while (getline(inFile17,temp,'\n')) {
+				cout << temp << endl;
+			}
+			cout << "ENTER GUESS:";
+			cin >> playerGuess;
+	
+			if (playerGuess == answer) {
+				system("clear");
+				ifstream inFile18("output/NPC5c.txt");
+				while (getline(inFile18,temp,'\n')) {
+					cout << temp << endl;
+		   		}	
+				playerCrown++;
+				solved = 1;
+				cin >> diagChoice;
+				break;
+			} else {
+				system("clear");
+				ifstream inFile11("outcome/NPC3d.txt");
+				while (getline(inFile11,temp,'\n')) {
+					cout << temp << endl;
+				}
+				solved = 0;
+				cin >> diagChoice;
+				break;	
+			}
 		}
 		else if (npcNum == 6) {
-			ifstream inFile("NPC6.txt");
-		}
-		else if (npcNum == 7) {
-			ifstream inFile("NPC7.txt");
-		}
-		else if (npcNum == 8) {
-			ifstream inFile("NPC8.txt");
-		}
-		else if (npcNum == 9) {
-			ifstream inFile("NPC9.txt");
-		}
-		else if (npcNum == 10) {
-			ifstream inFile("NPC10.txt");
+			
 		}
 		cin >> diagChoice;
     	if (diagChoice == 'q' || diagChoice == 'Q'){
@@ -409,35 +578,78 @@ void dialog (int npcNum) {
 //Kajiit has wares if you have coin
 void shopkeeping(int& playerLives, int& playerHP,int& playerGP,int& playerDP,int& playerSword, int& magic) {
 	string temp;
-	int selector;
+	char selector;
+	int price = 0, swordPrice = 0, armorPrice = 0, magicPrice = 0, healthPrice = 10, livesPrice = 0;
+	swordPrice = (5 *(playerSword + 1));
+	armorPrice = (3 * (playerDP + 1));
+	magicPrice = (10 * (magic +1));
+	livesPrice = (10 + (playerGP / 3));
+
 	ifstream inFile("output/shop1.txt");
-		while (getline(inFile,temp,'\n')) {
-			cout << temp << endl;
-		}
-	while (true) {
-//		cout << "make a selection 1) Lives 2)HP 3)DP 4)sword 5)magic 6)GP\n";
-		cin >> selector;
-		if (selector == 1) {
-			playerLives++;
-			continue;
-		} else if (selector == 2) {
-			playerHP++;
-		} else if (selector == 3) {
-			playerDP++;
-		} else if (selector == 4) {
-			playerSword++;
-		} else if (selector == 5) {
-			magic++;
-		} else if (selector == 6) {
-			playerGP++;
-		} else if (selector == 7) {
-			break;
-		}
-		system("clear");
-		while (getline(inFile,temp,'\n')) {
-			cout << temp << endl;
+	while (getline(inFile,temp,'\n')) {
+		cout << temp << endl;
+	}
+	
+	cin >> selector;
+	if (selector != 'q' || selector != 'Q') {
+
+		while (true) {
+			system("clear");
+			ifstream inFile ("output/shop2.txt");
+			while (getline(inFile,temp, '\n')) {
+				cout << temp << endl;
+			}
+			cout << "PLAYER GOLD:" << playerGP << endl;
+			cout << "1) A SWORD UPGRADE IS " << swordPrice << ":\n";
+			cout << "2) An ARMOR UPGRADE IS " << armorPrice << ":\n";
+			cout << "3) A MAGICK ITEM IS " << magicPrice << ":\n";
+			cout << "4) A SOUL FRAGMENT IS " << livesPrice << ":\n";
+			cout << "ENTER YOUR SELECTION:\n" << "Q TO QUIT\n";
+			int selector2 = 0;
+			int sel = 0;
+			cin >> selector2;
+			if (selector2 == 1) {
+				playerSword++;
+				if (playerGP < swordPrice) {
+					cout << "YOU DON'T HAVE ENOUGH!\n";
+					usleep(1000000);
+					continue;
+				}
+				playerGP -= swordPrice;
+				cout << "YOU BOUGHT A NEW SWORD!\n";
+			} else if (selector2 == 2) {
+				playerDP++;
+				if (playerGP < armorPrice) {
+					cout << "YOU DON'T HAVE ENOUGH!\n";
+					usleep(1000000);
+					continue;
+				}
+				playerGP -= armorPrice;
+				cout << "YOU BOUGHT SOME NEW CLOTHES!\n";
+			} else if (selector2 == 3) {
+				magic++;
+				if (playerGP < magicPrice) {
+					cout << "YOU DON'T HAVE ENOUGH!\n";
+					usleep(1000000);
+					continue;
+				}
+				playerGP -= magicPrice;
+				cout << "YOU BOUGHT SOME NEW MAGIC ITEMS!\n";
+			} else if (selector2 == 4) {
+				playerLives++;
+				if (playerGP < livesPrice) {
+					cout << "YOU DON'T HAVE ENOUGH!\n";
+					usleep(1000000);
+					continue;
+				}
+				playerGP -= livesPrice;
+				cout << "YOU BOUGHT A NEW SOUL FRAGMENT! BUT WHOSE\n";
+			} else {
+				break;
+			}
 		}
 	}
+
 }
 
 
@@ -450,6 +662,75 @@ void shopkeeping(int& playerLives, int& playerHP,int& playerGP,int& playerDP,int
 //magic 0 = no magic, 1 = Ring of Finger Guns, 2 = Amulet of Noxious Burp, 3 = Belt of Fire Flatulance, 4 = Shoe of Giant Size, 5 = Bob the Wizard's wand. 
 
 // Display number of Souls in the shrunken warlock's head.
+
+void inventory(int playerLives,int playerCrown, int playerDP, int playerSword, int magic) {
+	string temp;
+	char exit;
+	string inventoryScreen;
+	ifstream inFile("output/item.txt");
+	while (getline(inFile,inventoryScreen,'\n')) {
+		cout << inventoryScreen << endl;
+	}
+	cout << "KYK HAS " << playerLives << " SOUL FRAGMENTS!\n\n";
+	cout << "KYK HAS COLLECTED " << playerCrown << " CROWNS OUT OF 5!\n\n";
+//swords
+	if (playerSword == 1) {
+		cout << "KYK HAS HIS BARE HANDS!\n";
+	}
+	else if (playerSword == 2) {
+		cout << "KYK HAS A RUSTED SWORD!\n";
+	}
+	else if (playerSword == 3) {
+		cout << "KYK HAS A FINELY CRAFTED STEEL SHORT SWORD!\n";
+	}
+	else if (playerSword == 4) {
+		cout << "KYK HAS A CURSED BLADE THAT WEEPS CONSTANTLY!\n";
+	}
+	else if (playerSword == 5) {
+		cout << "KYK HAS SUSAN! HIS FAVORITE SWORD EVER!\n";
+	}
+	cout << endl;
+//armor
+	if (playerDP == 1) {
+		cout << "NO SHIRT NO SHOES\n";
+	}
+	else if (playerDP == 2) {
+		cout << "A LEATHER SHIRT!\n";
+	}
+	else if (playerDP == 3) {
+		cout << "A FINELY CRAFTED CHAINMAIL SHIRT 'JUST A BIT BIG'!\n";
+	}
+	else if (playerDP == 4) {
+		cout << "KYK DONS A LIVING MAGICAL CLOAK THAT PROTECTS HIM EVERY MOMENT!\n";
+	}
+	else if (playerDP == 5) {
+		cout << "KYK HAS THE VERY SHADOWS OF THE LAND WRAPPED AROUND HIM!\n";
+	}
+	cout << endl;
+// magic
+	if (magic == 0) {
+		cout << "NO MAGICKS!\n";
+	}
+	else if (magic == 1) {
+		cout << "KYK WEARS A GOLDEN RING OF FINGERGUNS!\n";
+	}
+	else if (magic == 2) {
+		cout << "AROUND HIS NECK A SICKLY GREEN GEMS HANGS FROM A SILVER CHAIN!\n";
+	}
+	else if (magic == 3) {
+		cout << "KYK HAS A THICK LEATHER BELT WITH A GOLDEN FIRBALL BELT BUCKLE!\n";
+	}
+	else if (magic == 4) {
+		cout << "A OVERLY LARGE SHOE!\n";
+	}
+	else if (magic == 5) {
+		cout << "A PLAIN WOODEN WAND!\n";
+	}
+	cout << endl;
+	cout << "PRESS Q TO QUIT:";	
+	cin >> exit;
+}
+
 
 // main
 int main() {
@@ -467,6 +748,7 @@ int main() {
 	int mobKills = 0;
 	int playerCrown = 0;
 	int npcNum = 0;
+	int solved = 0;
 //game code starts here
 	turn_on_ncurses();
 	Map map;
@@ -477,9 +759,12 @@ int main() {
 		if (ch == 'q' || ch == 'Q') break;//menu button etc need to be right here
 //inventory
 		else if (ch == 'i' || ch == 'I') {
-//			turn_off_ncurses();
+			turn_off_ncurses();
 			//inventory function
-//			drawOn(x,y,map,playerHP,playerGP,descriptor);
+			inventory(playerLives, playerCrown, playerDP, playerSword, magic);
+//		cout << "make a selection 1) Lives 2)HP 3)DP 4)sword 5)magic 6)GP\n";
+			drawOn(x,y,map,playerHP,playerGP,playerLvl,descriptor);
+//		cout << "make a selection 1) Lives 2)HP 3)DP 4)sword 5)magic 6)GP\n";
 		}
 //character movement	
 		else if (ch == RIGHT) {
@@ -580,31 +865,32 @@ int main() {
 			//NPC DIALOG function
 			while (true) {
        			if (npcNum == 1) {
-					dialog(npcNum);
+					dialog(npcNum, playerCrown,solved);
 					break;
 				}	
 				else if (npcNum == 2) {
-					dialog(npcNum);
+					dialog(npcNum, playerCrown,solved);
 					break;
 				}
 				else if (npcNum == 3) {
-					dialog(npcNum);
+					dialog(npcNum, playerCrown,solved);
 					break;
 				}
 				else if (npcNum == 4) {
-					dialog(npcNum);
+					dialog(npcNum, playerCrown,solved);
 					break;
 				}
 				else if (npcNum == 5) {
-					dialog(npcNum);
+					dialog(npcNum, playerCrown,solved);
 					break;
 				}
+				/*
 				else if (npcNum == 6) {
-					dialog(npcNum);
+					dialog(npcNum, playerCrown,solved);
 					break;
 				}
 				else if (npcNum == 7) {
-					dialog(npcNum);
+					dialog(npcNum, playerCrown,solved);
 					break;
 				}
 				else if (npcNum == 8) {
@@ -619,8 +905,15 @@ int main() {
 					dialog(npcNum);
 					break;
 				}
+				*/
   	 		}
-		map.setTile(x,y,Map::OPEN);
+		if (solved == 1) {
+			map.setTile(x,y,Map::OPEN);
+		}
+		if (solved == 0) {
+			npcNum--;
+		}
+		solved = 0;
 		x = old_x;
 		y = old_y;
 // redraws map after NPC function ends
