@@ -133,53 +133,6 @@ bool isHero(int posX, int posY, Map hero){
 }
 
 
-// this function just displays the monster inside of the combat function
-bool encounter(int playerLvl) {
-       	char combatChoice = '\0';
-		system("clear");
-        string mobScreen;
-		if (playerLvl == 1) {
-			ifstream inFile("output/mob1.txt");
-			while (getline(inFile,mobScreen,'\n')){ 
-			cout << mobScreen << endl;
-			}
-		} else if (playerLvl == 2) {
-			ifstream inFile("output/mob2.txt");
-			while (getline(inFile,mobScreen,'\n')){
-				cout << mobScreen << endl;
-			}
-				
-		} else if (playerLvl == 3) {
-            ifstream inFile("output/mob3.txt");
-			while (getline(inFile,mobScreen,'\n')){ 
-				cout << mobScreen << endl;
-			}
-		} else if (playerLvl == 4) {
-            ifstream inFile("output/mob4.txt");
-			while (getline(inFile,mobScreen,'\n')){ 
-				cout << mobScreen << endl;
-			}
-		} else if (playerLvl == 5) {
-            ifstream inFile("output/mob5.txt");
-			while (getline(inFile,mobScreen,'\n')){ 
-				cout << mobScreen << endl;
-			}
-		} else if (playerLvl > 5) {
-           	ifstream inFile("output/mob6.txt");
-			while (getline(inFile,mobScreen,'\n')){ 
-				cout << mobScreen << endl;
-			}
-		}
-		cin >> combatChoice;
-        if (combatChoice == 'r' || combatChoice == 'R'){
-            return false;
-        }
-        else if (combatChoice == 'c' || combatChoice == 'C'){
-			return true;
-        }
-		return true;
-}
-
 //magic 0 = no magic, 1 = Ring of Finger Guns, 2 = Amulet of Noxious Burp, 3 = Belt of Fire Flatulance, 4 = Shoe of Giant Size, 5 = Bob the Wizard's wand.
 void magicDescription (int magic) {
 	if (magic == 0) { 
@@ -227,6 +180,53 @@ void armorDescription (int playerDP) {
     }
 }
 
+// this function just displays the monster inside of the combat function
+bool encounter(int playerLvl) {
+       	char combatChoice = '\0';
+		system("clear");
+        string mobScreen;
+		if (playerLvl == 1) {
+			ifstream inFile("output/mob3.txt");
+			while (getline(inFile,mobScreen,'\n')){ 
+			cout << mobScreen << endl;
+			}
+		} else if (playerLvl == 2) {
+			ifstream inFile("output/mob4.txt");
+			while (getline(inFile,mobScreen,'\n')){
+				cout << mobScreen << endl;
+			}
+				
+		} else if (playerLvl == 3) {
+            ifstream inFile("output/mob1.txt");
+			while (getline(inFile,mobScreen,'\n')){ 
+				cout << mobScreen << endl;
+			}
+		} else if (playerLvl == 4) {
+            ifstream inFile("output/mob2.txt");
+			while (getline(inFile,mobScreen,'\n')){ 
+				cout << mobScreen << endl;
+			}
+		} else if (playerLvl == 5) {
+            ifstream inFile("output/mob6.txt");
+			while (getline(inFile,mobScreen,'\n')){ 
+				cout << mobScreen << endl;
+			}
+		} else if (playerLvl > 5) {
+           	ifstream inFile("output/mob5.txt");
+			while (getline(inFile,mobScreen,'\n')){ 
+				cout << mobScreen << endl;
+			}
+		}
+		cin >> combatChoice;
+        if (combatChoice == 'r' || combatChoice == 'R'){
+            return false;
+        }
+        else if (combatChoice == 'c' || combatChoice == 'C'){
+			return true;
+        }
+		return true;
+}
+
 // might need to balance combat HP/damage numbers but the system is complete
 // Combat function
 bool combat(int playerLvl,int& playerLives, int& playerHP, int playerDP, int sword, int& magic ) {
@@ -238,29 +238,29 @@ bool combat(int playerLvl,int& playerLives, int& playerHP, int playerDP, int swo
 	string mobDescription;
 
 	if (playerLvl == 1){
-		mobDescription = "The monster charges KYK tackling the small goblin!\n";
+		mobDescription = "The monster charges KYK tackling the small goblin!\n";//wolf
 		mobHP = 30;
 	}
 
 	if (playerLvl == 2) {
-		mobDescription = "The monster lashes out with it's sharp claws!\n";
-			mobHP = 50;
+		mobDescription = "The monster lashes out with it's sharp claws!\n";//bear
+		mobHP = 50;
 	}
 	if (playerLvl == 3) {
-		mobDescription = "The monster unleasing it's true power!\n";
-		mobHP = 130;
+		mobDescription = "The monster unleasing it's true power!\n";//skeleton
+		mobHP = 70;
 	}
 	if (playerLvl == 4) { 
-		mobDescription = "The monster bites The Goblin King with it's oversized maw!\n";
-		mobHP = 190;
+		mobDescription = "The monster bites The Goblin King with it's oversized maw!\n";//bat
+		mobHP = 90;
 	}
 	if (playerLvl == 5) {
-		mobDescription = "The monster lashes out with spectral energies!\n";
-		mobHP = 220;
+		mobDescription = "The monster lashes out with spectral energies!\n";//skull
+		mobHP = 120;
 	}
 	if (playerLvl > 5 && sword == 5) {
-		mobDescription = "The monster strikes out with magical weapons!\n";
-		mobHP = 400;
+		mobDescription = "The monster strikes out with magical weapons!\n";//zombi
+		mobHP = 160;
 	}
 	if (encounter(playerLvl) == false) {
 		return false;
@@ -282,8 +282,8 @@ bool combat(int playerLvl,int& playerLives, int& playerHP, int playerDP, int swo
 		}
 		else if (combatChoice == 'D' || combatChoice == 'd') {
 			playerAtk = 0;
-			cout << "Defend! Kyk deals no damage!\n";
 			mobAtk = ((rand() % 8 + 1) * playerLvl) - playerDP;
+			cout << "Defend! Kyk deals no damage!\n";
 			armorDescription (playerDP);
 		}
 
@@ -304,11 +304,11 @@ bool combat(int playerLvl,int& playerLives, int& playerHP, int playerDP, int swo
 			magicDescription(magic);
 		}
 		//player damage resolution and mob turn
-//		if (playerAtk < 1) playerAtk = 0;
+		if (playerAtk < 1) playerAtk = 0;
 		cout << "Kyk Dealt " << playerAtk << " Damage!\n";
 		mobHP -= playerAtk;
 		if (mobHP < 1) break;
-//		if (mobAtk < 1) mobAtk = 0;
+		if (mobAtk < 1) mobAtk = 0;
 		cout << mobDescription;
 		cout << "The monster dealt " <<  mobAtk << " Damage!\n";
 		playerHP -= mobAtk;
@@ -592,7 +592,7 @@ void shopkeeping(int& playerLives, int& playerHP,int& playerGP,int& playerDP,int
 	
 	cin >> selector;
 	if (selector != 'q' || selector != 'Q') {
-
+		selector = '\0';
 		while (true) {
 			system("clear");
 			ifstream inFile ("output/shop2.txt");
@@ -604,53 +604,67 @@ void shopkeeping(int& playerLives, int& playerHP,int& playerGP,int& playerDP,int
 			cout << "2) An ARMOR UPGRADE IS " << armorPrice << ":\n";
 			cout << "3) A MAGICK ITEM IS " << magicPrice << ":\n";
 			cout << "4) A SOUL FRAGMENT IS " << livesPrice << ":\n";
+			cout << "5) SOME HEALTH IS " << healthPrice << ":\n";
 			cout << "ENTER YOUR SELECTION:\n" << "Q TO QUIT\n";
 			int selector2 = 0;
 			int sel = 0;
 			cin >> selector2;
 			if (selector2 == 1) {
-				playerSword++;
 				if (playerGP < swordPrice) {
 					cout << "YOU DON'T HAVE ENOUGH!\n";
 					usleep(1000000);
 					continue;
 				}
+				playerSword++;
 				playerGP -= swordPrice;
 				cout << "YOU BOUGHT A NEW SWORD!\n";
 			} else if (selector2 == 2) {
-				playerDP++;
 				if (playerGP < armorPrice) {
 					cout << "YOU DON'T HAVE ENOUGH!\n";
 					usleep(1000000);
 					continue;
 				}
+				playerDP++;
 				playerGP -= armorPrice;
 				cout << "YOU BOUGHT SOME NEW CLOTHES!\n";
 			} else if (selector2 == 3) {
-				magic++;
 				if (playerGP < magicPrice) {
 					cout << "YOU DON'T HAVE ENOUGH!\n";
 					usleep(1000000);
 					continue;
 				}
+				magic++;
 				playerGP -= magicPrice;
 				cout << "YOU BOUGHT SOME NEW MAGIC ITEMS!\n";
 			} else if (selector2 == 4) {
-				playerLives++;
 				if (playerGP < livesPrice) {
 					cout << "YOU DON'T HAVE ENOUGH!\n";
 					usleep(1000000);
 					continue;
 				}
+				playerLives++;
 				playerGP -= livesPrice;
 				cout << "YOU BOUGHT A NEW SOUL FRAGMENT! BUT WHOSE\n";
+
+			} else if (selector2 == 5) {
+				if (playerGP < healthPrice) {
+					cout << "YOU DON'T HAVE ENOUGH!\n";
+					usleep(1000000);
+					continue;
+				}
+				playerGP -= healthPrice;
+				playerHP += 20;
+				cout << "YOU BOUGHT A BIT OF HEALTH!\n";
 			} else {
 				break;
 			}
+			break;
 		}
-	}
-
+	} else {
+		usleep(1000000);
+		}
 }
+
 
 
 //ASCII CAT
@@ -664,71 +678,73 @@ void shopkeeping(int& playerLives, int& playerHP,int& playerGP,int& playerDP,int
 // Display number of Souls in the shrunken warlock's head.
 
 void inventory(int playerLives,int playerCrown, int playerDP, int playerSword, int magic) {
-	string temp;
-	char exit;
-	string inventoryScreen;
-	ifstream inFile("output/item.txt");
-	while (getline(inFile,inventoryScreen,'\n')) {
-		cout << inventoryScreen << endl;
-	}
-	cout << "KYK HAS " << playerLives << " SOUL FRAGMENTS!\n\n";
-	cout << "KYK HAS COLLECTED " << playerCrown << " CROWNS OUT OF 5!\n\n";
-//swords
-	if (playerSword == 1) {
-		cout << "KYK HAS HIS BARE HANDS!\n";
-	}
-	else if (playerSword == 2) {
-		cout << "KYK HAS A RUSTED SWORD!\n";
-	}
-	else if (playerSword == 3) {
-		cout << "KYK HAS A FINELY CRAFTED STEEL SHORT SWORD!\n";
-	}
-	else if (playerSword == 4) {
-		cout << "KYK HAS A CURSED BLADE THAT WEEPS CONSTANTLY!\n";
-	}
-	else if (playerSword == 5) {
-		cout << "KYK HAS SUSAN! HIS FAVORITE SWORD EVER!\n";
-	}
-	cout << endl;
-//armor
-	if (playerDP == 1) {
-		cout << "NO SHIRT NO SHOES\n";
-	}
-	else if (playerDP == 2) {
-		cout << "A LEATHER SHIRT!\n";
-	}
-	else if (playerDP == 3) {
-		cout << "A FINELY CRAFTED CHAINMAIL SHIRT 'JUST A BIT BIG'!\n";
-	}
-	else if (playerDP == 4) {
-		cout << "KYK DONS A LIVING MAGICAL CLOAK THAT PROTECTS HIM EVERY MOMENT!\n";
-	}
-	else if (playerDP == 5) {
-		cout << "KYK HAS THE VERY SHADOWS OF THE LAND WRAPPED AROUND HIM!\n";
-	}
-	cout << endl;
-// magic
-	if (magic == 0) {
-		cout << "NO MAGICKS!\n";
-	}
-	else if (magic == 1) {
-		cout << "KYK WEARS A GOLDEN RING OF FINGERGUNS!\n";
-	}
-	else if (magic == 2) {
-		cout << "AROUND HIS NECK A SICKLY GREEN GEMS HANGS FROM A SILVER CHAIN!\n";
-	}
-	else if (magic == 3) {
-		cout << "KYK HAS A THICK LEATHER BELT WITH A GOLDEN FIRBALL BELT BUCKLE!\n";
-	}
-	else if (magic == 4) {
-		cout << "A OVERLY LARGE SHOE!\n";
-	}
-	else if (magic == 5) {
-		cout << "A PLAIN WOODEN WAND!\n";
-	}
-	cout << endl;
-	cout << "PRESS Q TO QUIT:";	
-	cin >> exit;
+//	while (true) {
+		string temp;
+		char exit;
+		string inventoryScreen;
+		ifstream inFile("output/item.txt");
+		while (getline(inFile,inventoryScreen,'\n')) {
+			cout << inventoryScreen << endl;
+		}
+		cout << "KYK HAS " << playerLives << " SOUL FRAGMENTS!\n\n";
+		cout << "KYK HAS COLLECTED " << playerCrown << " CROWNS OUT OF 5!\n\n";
+	//swords
+		if (playerSword == 1) {
+			cout << "KYK HAS HIS BARE HANDS!\n";
+		}
+		else if (playerSword == 2) {
+			cout << "KYK HAS A RUSTED SWORD!\n";
+		}
+		else if (playerSword == 3) {
+			cout << "KYK HAS A FINELY CRAFTED STEEL SHORT SWORD!\n";
+		}
+		else if (playerSword == 4) {
+			cout << "KYK HAS A CURSED BLADE THAT WEEPS CONSTANTLY!\n";
+		}
+		else if (playerSword == 5) {
+			cout << "KYK HAS SUSAN! HIS FAVORITE SWORD EVER!\n";
+		}
+		cout << endl;
+	//armor
+		if (playerDP == 1) {
+			cout << "NO SHIRT NO SHOES\n";
+		}
+		else if (playerDP == 2) {
+			cout << "A LEATHER SHIRT!\n";
+		}
+		else if (playerDP == 3) {
+			cout << "A FINELY CRAFTED CHAINMAIL SHIRT 'JUST A BIT BIG'!\n";
+		}
+		else if (playerDP == 4) {
+			cout << "KYK DONS A LIVING MAGICAL CLOAK THAT PROTECTS HIM EVERY MOMENT!\n";
+		}
+		else if (playerDP == 5) {
+			cout << "KYK HAS THE VERY SHADOWS OF THE LAND WRAPPED AROUND HIM!\n";
+		}
+		cout << endl;
+	// magic
+		if (magic == 0) {
+			cout << "NO MAGICKS!\n";
+		}
+		else if (magic == 1) {
+			cout << "KYK WEARS A GOLDEN RING OF FINGERGUNS!\n";
+		}
+		else if (magic == 2) {
+			cout << "AROUND HIS NECK A SICKLY GREEN GEMS HANGS FROM A SILVER CHAIN!\n";
+		}
+		else if (magic == 3) {
+			cout << "KYK HAS A THICK LEATHER BELT WITH A GOLDEN FIRBALL BELT BUCKLE!\n";
+		}
+		else if (magic == 4) {
+			cout << "A OVERLY LARGE SHOE!\n";
+		}
+		else if (magic == 5) {
+			cout << "A PLAIN WOODEN WAND!\n";
+		}
+		cout << endl << "PRESS Q TO QUIT:";	
+		cin >> exit;
+//		break;
+//	}
 }
 
 
@@ -818,9 +834,9 @@ int main() {
 			turn_off_ncurses();
 			//shopkeeper function
 			shopkeeping(playerLives, playerHP, playerGP, playerDP, playerSword, magic);
-			map.setTile(x,y,Map::OPEN);
 			x = old_x;
 			y = old_y;
+			system("clear");
 			drawOn(x,y,map, playerHP, playerGP, playerLvl, descriptor);
 		}
 //treasure player will gain 1 gold after moving over the tile
@@ -850,6 +866,7 @@ int main() {
 			}
 			if (mobKills == 6) {
 				playerLvl++;
+				playerHP = 20 + (playerLvl * 10);
 				mobKills = 0;
 			}
 			x = old_x;
@@ -920,7 +937,7 @@ int main() {
 		drawOn(x,y,map,playerHP,playerGP,playerLvl,descriptor);
 		}
 //Stop flickering by only redrawing on a change
-		if (x != old_x or y != old_y or descriptor == Map::WATER or descriptor == Map::MONSTER or descriptor == Map::WALL) {
+		if (x != old_x or y != old_y or descriptor == Map::WATER or descriptor == Map::MONSTER or descriptor == Map::WALL or descriptor == Map::KAJIIT) {
 			clear();
 			map.draw(x, y);
 			mvprintw(Map::DISPLAY + 1, 0, "X: %i Y: %i Health: %i Gold: %i Lvl: %i\n", x, y, playerHP, playerGP, playerLvl);
