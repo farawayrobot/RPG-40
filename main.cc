@@ -147,7 +147,7 @@ void magicDescription (int magic) {
 	} else if (magic == 4) {
 		cout << "Kyk screams\"MAKE MY MONSTER GROW!\" and quickly grows several stories tall and steps on the Monster before shrinking back to his normal size.\n";
 	} else if (magic == 5) {
-		cout << "Kyk holds the plain wooden wand in two hands and carefully aim at the monster. Suddenly a old man appears and charges at the Monster slapping it with a shoe!\n";
+		cout << "Kyk holds the plain wooden wand in two hands and carefully aim at the monster. Suddenly Bob the wizard appears and charges at the Monster slapping it with a shoe!\n";
 	}
 }
 
@@ -387,7 +387,7 @@ void dialog (int& npcNum, int& playerCrown,int& solved) {
 			if ((rand() % 3) == 2) {
 				password = "scissors";
 			}
-			cout << "ENTER PASSWORD:";
+			cout << "ENTER PASSWORD IN LOWER CAPS:";
 			cin >> guess;
 			if (guess == password) {
 				system("clear");
@@ -580,6 +580,7 @@ void dialog (int& npcNum, int& playerCrown,int& solved) {
 void shopkeeping(int& playerLives, int& playerHP,int& playerGP,int& playerDP,int& playerSword, int& magic) {
 	string temp;
 	char selector ='\0';
+	char selector2 ='\0';
 	int price = 0, swordPrice = 0, armorPrice = 0, magicPrice = 0, healthPrice = 10, livesPrice = 0;
 	swordPrice = (5 *(playerSword + 1));
 	armorPrice = (3 * (playerDP + 1));
@@ -613,9 +614,8 @@ void shopkeeping(int& playerLives, int& playerHP,int& playerGP,int& playerDP,int
 			cout << "4) A SOUL FRAGMENT IS " << livesPrice << ":\n";
 			cout << "5) SOME HEALTH IS " << healthPrice << ":\n";
 			cout << "ENTER YOUR SELECTION:\n" << "Q TO QUIT\n";
-			int selector2 = 0;
 			cin >> selector2;
-			if (selector2 == 1) {
+			if (selector2 == '1') {
 				if (playerGP < swordPrice) {
 					cout << "YOU DON'T HAVE ENOUGH!\n";
 					usleep(1000000);
@@ -624,7 +624,7 @@ void shopkeeping(int& playerLives, int& playerHP,int& playerGP,int& playerDP,int
 					playerGP -= swordPrice;
 					cout << "YOU BOUGHT A NEW SWORD!\n";
 				}
-			} else if (selector2 == 2) {
+			} else if (selector2 == '2') {
 				if (playerGP < armorPrice) {
 					cout << "YOU DON'T HAVE ENOUGH!\n";
 					usleep(1000000);
@@ -633,7 +633,7 @@ void shopkeeping(int& playerLives, int& playerHP,int& playerGP,int& playerDP,int
 					playerGP -= armorPrice;
 					cout << "YOU BOUGHT SOME NEW CLOTHES!\n";
 				}
-			} else if (selector2 == 3) {
+			} else if (selector2 == '3') {
 				if (playerGP < magicPrice) {
 					cout << "YOU DON'T HAVE ENOUGH!\n";
 					usleep(1000000);
@@ -642,7 +642,7 @@ void shopkeeping(int& playerLives, int& playerHP,int& playerGP,int& playerDP,int
 					playerGP -= magicPrice;
 					cout << "YOU BOUGHT SOME NEW MAGIC ITEMS!\n";
 				}
-			} else if (selector2 == 4) {
+			} else if (selector2 ==  '4') {
 				if (playerGP < livesPrice) {
 					cout << "YOU DON'T HAVE ENOUGH!\n";
 					usleep(1000000);
@@ -651,7 +651,7 @@ void shopkeeping(int& playerLives, int& playerHP,int& playerGP,int& playerDP,int
 					playerGP -= livesPrice;
 					cout << "YOU BOUGHT A NEW SOUL FRAGMENT! BUT WHOSE\n";
 				}
-			} else if (selector2 == 5) {
+			} else if (selector2 == '5') {
 				if (playerGP < healthPrice) {
 					cout << "YOU DON'T HAVE ENOUGH!\n";
 					usleep(1000000);
@@ -660,7 +660,7 @@ void shopkeeping(int& playerLives, int& playerHP,int& playerGP,int& playerDP,int
 					playerHP += 20;
 					cout << "YOU BOUGHT A BIT OF HEALTH!\n";
 				}
-			} else {
+			} else if (selector2 == 'q'|| selector2 == 'Q')  {
 				subMenuOpen = false;
 			}
 		}
