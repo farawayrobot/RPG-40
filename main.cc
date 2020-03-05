@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <ios>
 #include <iomanip>
+#include <climits>
 
 const int MAX_FPS = 90; //Cap frame rate
 const unsigned int TIMEOUT = 10; //Milliseconds to wait for a getch to finish
@@ -578,7 +579,7 @@ void dialog (int& npcNum, int& playerCrown,int& solved) {
 //Kajiit has wares if you have coin
 void shopkeeping(int& playerLives, int& playerHP,int& playerGP,int& playerDP,int& playerSword, int& magic) {
 	string temp;
-	char selector;
+	char selector ='\0';
 	int price = 0, swordPrice = 0, armorPrice = 0, magicPrice = 0, healthPrice = 10, livesPrice = 0;
 	swordPrice = (5 *(playerSword + 1));
 	armorPrice = (3 * (playerDP + 1));
@@ -591,10 +592,13 @@ void shopkeeping(int& playerLives, int& playerHP,int& playerGP,int& playerDP,int
 	}
 	inFile.close();
 	cout << "KAJIIT HAS WARES IF YOU HAVE COIN\n";
-	
 	cin >> selector;
-	if (selector != 'q' || selector != 'Q') {
-		while (true) {
+	if (selector == 'q' || selector == 'Q') {
+		usleep(1000000);
+	}		
+	else {
+		bool subMenuOpen = true;
+		while (subMenuOpen) {
 			system("clear");
 			inFile.open("output/shop1.txt");
 
@@ -610,63 +614,57 @@ void shopkeeping(int& playerLives, int& playerHP,int& playerGP,int& playerDP,int
 			cout << "5) SOME HEALTH IS " << healthPrice << ":\n";
 			cout << "ENTER YOUR SELECTION:\n" << "Q TO QUIT\n";
 			int selector2 = 0;
-			int sel = 0;
 			cin >> selector2;
 			if (selector2 == 1) {
 				if (playerGP < swordPrice) {
 					cout << "YOU DON'T HAVE ENOUGH!\n";
 					usleep(1000000);
-					continue;
+				} else {
+					playerSword++;
+					playerGP -= swordPrice;
+					cout << "YOU BOUGHT A NEW SWORD!\n";
 				}
-				playerSword++;
-				playerGP -= swordPrice;
-				cout << "YOU BOUGHT A NEW SWORD!\n";
 			} else if (selector2 == 2) {
 				if (playerGP < armorPrice) {
 					cout << "YOU DON'T HAVE ENOUGH!\n";
 					usleep(1000000);
-					continue;
+				} else {
+					playerDP++;
+					playerGP -= armorPrice;
+					cout << "YOU BOUGHT SOME NEW CLOTHES!\n";
 				}
-				playerDP++;
-				playerGP -= armorPrice;
-				cout << "YOU BOUGHT SOME NEW CLOTHES!\n";
 			} else if (selector2 == 3) {
 				if (playerGP < magicPrice) {
 					cout << "YOU DON'T HAVE ENOUGH!\n";
 					usleep(1000000);
-					continue;
+				} else {
+					magic++;
+					playerGP -= magicPrice;
+					cout << "YOU BOUGHT SOME NEW MAGIC ITEMS!\n";
 				}
-				magic++;
-				playerGP -= magicPrice;
-				cout << "YOU BOUGHT SOME NEW MAGIC ITEMS!\n";
 			} else if (selector2 == 4) {
 				if (playerGP < livesPrice) {
 					cout << "YOU DON'T HAVE ENOUGH!\n";
 					usleep(1000000);
-					continue;
+				} else {
+					playerLives++;
+					playerGP -= livesPrice;
+					cout << "YOU BOUGHT A NEW SOUL FRAGMENT! BUT WHOSE\n";
 				}
-				playerLives++;
-				playerGP -= livesPrice;
-				cout << "YOU BOUGHT A NEW SOUL FRAGMENT! BUT WHOSE\n";
-
 			} else if (selector2 == 5) {
 				if (playerGP < healthPrice) {
 					cout << "YOU DON'T HAVE ENOUGH!\n";
 					usleep(1000000);
-					continue;
+				} else {
+					playerGP -= healthPrice;
+					playerHP += 20;
+					cout << "YOU BOUGHT A BIT OF HEALTH!\n";
 				}
-				playerGP -= healthPrice;
-				playerHP += 20;
-				cout << "YOU BOUGHT A BIT OF HEALTH!\n";
 			} else {
-				break;
+				subMenuOpen = false;
 			}
-			selector2 = '\0';
 		}
-	} else {
-		selector = '\0';
-		usleep(1000000);
-		}
+	}
 }
 
 
