@@ -589,16 +589,19 @@ void shopkeeping(int& playerLives, int& playerHP,int& playerGP,int& playerDP,int
 	while (getline(inFile,temp,'\n')) {
 		cout << temp << endl;
 	}
+	inFile.close();
+	cout << "KAJIIT HAS WARES IF YOU HAVE COIN\n";
 	
 	cin >> selector;
 	if (selector != 'q' || selector != 'Q') {
-		selector = '\0';
 		while (true) {
 			system("clear");
-			ifstream inFile ("output/shop2.txt");
-			while (getline(inFile,temp, '\n')) {
+			inFile.open("output/shop1.txt");
+
+			while (getline(inFile,temp,'\n')) {
 				cout << temp << endl;
 			}
+			inFile.close();
 			cout << "PLAYER GOLD:" << playerGP << endl;
 			cout << "1) A SWORD UPGRADE IS " << swordPrice << ":\n";
 			cout << "2) An ARMOR UPGRADE IS " << armorPrice << ":\n";
@@ -658,9 +661,10 @@ void shopkeeping(int& playerLives, int& playerHP,int& playerGP,int& playerDP,int
 			} else {
 				break;
 			}
-			break;
+			selector2 = '\0';
 		}
 	} else {
+		selector = '\0';
 		usleep(1000000);
 		}
 }
@@ -836,7 +840,6 @@ int main() {
 			shopkeeping(playerLives, playerHP, playerGP, playerDP, playerSword, magic);
 			x = old_x;
 			y = old_y;
-			system("clear");
 			drawOn(x,y,map, playerHP, playerGP, playerLvl, descriptor);
 		}
 //treasure player will gain 1 gold after moving over the tile
