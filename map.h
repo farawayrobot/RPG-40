@@ -15,12 +15,13 @@ class Map {
 	static const char HERO     = 'H';
 	static const char MONSTER  = 'M';
 	static const char NPC      = 'N';
+	static const char KAJIIT   = 'K';
 	static const char WALL     = '#';
 	static const char WATER    = '~';
 	static const char OPEN     = '.';
 	static const char TREASURE = '$';
-	static const size_t SIZE = 150; //World is a 100x100 map
-	static const size_t DISPLAY = 30; //Show a 10x10 area at a time
+	static const size_t SIZE = 1550; //World is a 100x100 map
+	static const size_t DISPLAY = 45; //Show a 10x10 area at a time
 	//Randomly generate map
 	void init_map() {
 		uniform_int_distribution<int> d100(1,1000);
@@ -35,20 +36,22 @@ class Map {
 				else if (i == SIZE/2 and j == SIZE/2) 
 					map.at(i).at(j) = HERO;
 				else {
-					//3% chance of monster
-					if (d100(gen) <= 30) {
+					if (d100(gen) <= 20) {
 						map.at(i).at(j) = MONSTER;
 					}
 					else if (d100(gen) <=1) {
 						map.at(i).at(j) = NPC;
 					}
-					else if (d100(gen) <= 20) {
+					else if (d100(gen) <=1) {
+						map.at(i).at(j) = KAJIIT;
+					}
+					else if (d100(gen) <= 40) {
 						map.at(i).at(j) = TREASURE;
 					}
-					else if (d100(gen) <= 80) { //10% each spot is wall
+					else if (d100(gen) <= 60) { //10% each spot is wall
 						map.at(i).at(j) = WALL;
 					}
-					else if (d100(gen) <= 30) { //3% each spot is water
+					else if (d100(gen) <= 40) { //3% each spot is water
 						map.at(i).at(j) = WATER;
 					}
 					else if (d100(gen) <= 300) { //30% chance of water near other water
